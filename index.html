@@ -299,20 +299,102 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 });
 
 /* محاضرات الكلاس روم (بتتضاف تلقائي في lectures.json) */
-async function loadAuto() {
-  try {
-    const r = await fetch("https://youssefashraf50.github.io/lectures/lectures.json?v=" + Date.now(), { cache: "no-store" });
-    if (!r.ok) return;
-    const d = await r.json();
-    (d.items || []).forEach(it => {
-      let s = SUBJECTS.find(x => x.name === it.subject);
-      if (!s) { s = { name: it.subject, icon: "acc", lectures: [] }; SUBJECTS.push(s); }
-      s.lectures.push({ title: it.title, file: it.file });
-    });
-    renderStats(); renderChips(); render();
-  } catch (_) {}
+
+function normalizeLectureText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/\.pdf$/i, "")
+    .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/[ىي]/g, "ي")
+    .replace(/[_\-—–()[\]]/g, " ")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
+function getLectureNumber(title) {
+  const t = normalizeLectureText(title);
+  const m = t.match(/(?:محاضرة|المحاضرة|الأسبوع|الاسبوع)\s*(\d+)|(?:محاضرة|المحاضرة)\s*(الأولى|الاولى|الثانية|الثالثة|الرابعة|الخامسة)/);
+  if (!m) return "";
+
+  if (m[1]) return m[1];
+
+  const numbers = {
+    "الأولى": "1", "الاولى": "1",
+    "الثانية": "2", "الثالثة": "3",
+    "الرابعة": "4", "الخامسة": "5"
+  };
+  return numbers[m[2]] || "";
+}
+
+async function loadAuto() {
+  try {
+    const r = await fetch(
+      "https://youssefashraf50.github.io/lectures/lectures.json?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+
+    if (!r.ok) return;
+
+    const d = await r.json();
+
+    (d.items || []).forEach(it => {
+      if (!it.subject || !it.file) return;
+
+      // Ignore old generic records with no useful lecture title.
+      if (normalizeLectureText(it.title) === "محاضرة") return;
+
+      let subject = SUBJECTS.find(s => s.name === it.subject);
+
+      if (!subject) {
+        subject = {
+          name: it.subject,
+          icon: "acc",
+          lectures: []
+        };
+        SUBJECTS.push(subject);
+      }
+
+      const newFile = normalizeLectureText(
+        it.file.replace(/_[A-Za-z0-9-]{8,}(?=\.pdf$)/i, "")
+      );
+      const newTitle = normalizeLectureText(it.title);
+      const newNumber = getLectureNumber(it.title);
+
+      const duplicate = subject.lectures.some(existing => {
+        const oldFile = normalizeLectureText(
+          existing.file.replace(/_[A-Za-z0-9-]{8,}(?=\.pdf$)/i, "")
+        );
+
+        const oldTitle = normalizeLectureText(existing.title);
+        const oldNumber = getLectureNumber(existing.title);
+
+        // Same file or same normalized title.
+        if (oldFile === newFile || oldTitle === newTitle) {
+          return true;
+        }
+
+        // Same subject and lecture/week number.
+        // Helps catch titles that differ between the website and Classroom.
+        return newNumber && oldNumber && newNumber === oldNumber;
+      });
+
+      if (!duplicate) {
+        subject.lectures.push({
+          title: it.title,
+          file: it.file
+        });
+      }
+    });
+
+    renderStats();
+    renderChips();
+    render();
+  } catch (error) {
+    console.error("تعذر تحميل المحاضرات التلقائية:", error);
+  }
+}
 renderStats(); renderChips(); render();
 loadAuto();
 </script>
