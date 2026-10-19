@@ -305,7 +305,7 @@ function showAiPicker(btn, pdfUrl) {
   // امسح أي picker موجود
   document.querySelectorAll('.ai-picker').forEach(p => p.remove());
 
-  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n• خلاصة في 3 أسطر\n\n${pdfUrl}`;
+  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n${pdfUrl}`;
   const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt)}`;
   const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
 
