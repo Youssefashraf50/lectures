@@ -5,81 +5,62 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>محاضرات 8/8</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap">
-
 <style>
 :root {
-  --bg: #f0f2f8;
-  --surface: #ffffff;
-  --card: #ffffff;
-  --border: #dde1f0;
-  --accent: #3a5bd9;
-  --accent2: #6b42c4;
-  --accent-soft: rgba(58,91,217,.10);
-  --text: #1a1d2e;
-  --muted: #6b7199;
-  --header-bg: #1a1d2e;
-  --header-text: #e8eaf6;
-  --tag-bg: rgba(58,91,217,.12);
+  --bg: #f0f2f8; --surface: #ffffff; --card: #ffffff; --border: #dde1f0;
+  --accent: #3a5bd9; --accent2: #6b42c4;
+  --accent-soft: rgba(58,91,217,.10); --text: #1a1d2e; --muted: #6b7199;
+  --header-bg: #1a1d2e; --header-text: #e8eaf6; --tag-bg: rgba(58,91,217,.12);
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0f1117; --surface: #1a1d27; --card: #22263a; --border: #2e3350;
     --accent: #5b7ef8; --accent2: #9b7dea;
-    --accent-soft: rgba(91,126,248,.12);
-    --text: #e8eaf6; --muted: #8b90b8;
-    --header-bg: #111420; --header-text: #e8eaf6;
-    --tag-bg: rgba(91,126,248,.15);
+    --accent-soft: rgba(91,126,248,.12); --text: #e8eaf6; --muted: #8b90b8;
+    --header-bg: #111420; --header-text: #e8eaf6; --tag-bg: rgba(91,126,248,.15);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0f1117; --surface: #1a1d27; --card: #22263a; --border: #2e3350;
   --accent: #5b7ef8; --accent2: #9b7dea;
-  --accent-soft: rgba(91,126,248,.12);
-  --text: #e8eaf6; --muted: #8b90b8;
-  --header-bg: #111420; --header-text: #e8eaf6;
-  --tag-bg: rgba(91,126,248,.15);
+  --accent-soft: rgba(91,126,248,.12); --text: #e8eaf6; --muted: #8b90b8;
+  --header-bg: #111420; --header-text: #e8eaf6; --tag-bg: rgba(91,126,248,.15);
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   height: 100%;
   font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  direction: rtl;
+  background: var(--bg); color: var(--text); direction: rtl;
 }
 
 header {
-  background: var(--header-bg);
-  color: var(--header-text);
-  padding: 14px max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px));
+  background: var(--header-bg); color: var(--header-text);
+  padding: 14px max(16px, env(safe-area-inset-right,0px)) 14px max(16px, env(safe-area-inset-left,0px));
   padding-block: 14px;
   display: flex; align-items: center; gap: 12px;
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  position: sticky; top: env(safe-area-inset-top,0px); z-index: 50;
   border-bottom: 1px solid rgba(255,255,255,.06);
 }
 body::before {
   content: ""; position: fixed; inset: 0 0 auto;
-  height: env(safe-area-inset-top, 0px); z-index: 51;
-  background: var(--header-bg);
+  height: env(safe-area-inset-top,0px); z-index: 51; background: var(--header-bg);
 }
 .logo {
   width: 40px; height: 40px; flex-shrink: 0;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border-radius: 11px;
-  display: flex; align-items: center; justify-content: center; font-size: 20px;
+  border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px;
 }
 .site-title { font-size: 1.05rem; font-weight: 900; letter-spacing: -.01em; }
 .site-sub { font-size: 0.72rem; color: rgba(232,234,246,.55); margin-top: 2px; }
 
 .container {
   max-width: 980px; margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-left: max(16px, env(safe-area-inset-left,0px));
+  padding-right: max(16px, env(safe-area-inset-right,0px));
   padding-block: 24px 64px;
 }
 
@@ -133,8 +114,8 @@ body::before {
 }
 .btn-sm:hover { opacity: .78; }
 .btn-view { background: var(--accent-soft); color: var(--accent); }
-.btn-dl { background: var(--tag-bg); color: var(--accent2); }
-.btn-ai {
+.btn-dl   { background: var(--tag-bg); color: var(--accent2); }
+.btn-ai   {
   background: linear-gradient(135deg, rgba(58,91,217,.13), rgba(107,66,196,.13));
   color: var(--text); border: 1px solid var(--border); position: relative;
 }
@@ -168,71 +149,8 @@ body::before {
 
 .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
 
-/* Modal */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.72); z-index: 200;
-  align-items: flex-end; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 18px 18px 0 0; width: 100%; max-width: 900px; height: 92dvh;
-  display: flex; flex-direction: column; overflow: hidden;
-  animation: slideUp .22s ease;
-}
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.modal-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 13px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 10px;
-}
-.modal-title { font-weight: 700; font-size: 0.9rem; flex: 1; min-width: 0; }
-.modal-close {
-  background: none; border: none; cursor: pointer;
-  color: var(--muted); font-size: 22px; line-height: 1; transition: color .15s; flex-shrink: 0;
-}
-.modal-close:hover { color: var(--text); }
-
-.pdf-area {
-  flex: 1; overflow-y: auto; overflow-x: hidden; background: #525659;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 10px; padding: 12px 8px; min-height: 0;
-}
-.pdf-page-wrap canvas {
-  display: block; max-width: 100%; border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.4);
-}
-.pdf-status {
-  color: #ccc; font-size: 0.85rem; text-align: center;
-  padding: 30px 16px; font-family: inherit;
-}
-.pdf-nav {
-  flex-shrink: 0; background: var(--surface); border-top: 1px solid var(--border);
-  padding: 10px 16px;
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
-}
-.pdf-nav-info { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.nav-btns { display: flex; gap: 6px; }
-.btn-nav {
-  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px;
-  font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
-  color: var(--text); transition: border-color .15s, opacity .15s;
-}
-.btn-nav:disabled { opacity: .38; cursor: not-allowed; }
-.btn-nav:not(:disabled):hover { border-color: var(--accent); }
-.btn-dl-full {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--accent); color: #fff; border-radius: 8px; padding: 7px 16px;
-  font-size: 0.82rem; font-weight: 700; text-decoration: none; font-family: inherit; transition: opacity .18s;
-}
-.btn-dl-full:hover { opacity: .85; }
-
 @media (max-width: 600px) {
   .lectures-grid { grid-template-columns: 1fr; }
-  .modal { border-radius: 14px 14px 0 0; height: 96dvh; }
 }
 </style>
 </head>
@@ -254,32 +172,9 @@ body::before {
   <div id="main"></div>
 </div>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <div class="modal-head">
-      <span class="modal-title" id="modalTitle">—</span>
-      <button class="modal-close" onclick="closeModal()" aria-label="إغلاق">✕</button>
-    </div>
-    <div class="pdf-area" id="pdfArea">
-      <div class="pdf-status" id="pdfStatus">جارٍ تحميل الملف...</div>
-    </div>
-    <div class="pdf-nav">
-      <div class="nav-btns">
-        <button class="btn-nav" id="btnPrev" onclick="changePage(-1)" disabled>◀ السابق</button>
-        <button class="btn-nav" id="btnNext" onclick="changePage(1)" disabled>التالي ▶</button>
-      </div>
-      <div class="pdf-nav-info" id="pageInfo">—</div>
-      <a id="dlBtn" href="#" class="btn-dl-full">⬇️ تحميل</a>
-    </div>
-  </div>
-</div>
-
-<!-- PDF.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+// ✅ غيّر ده لرابط موقعك الحقيقي على GitHub Pages
+const BASE_URL = "https://youssefashraf50.github.io/lectures/";
 
 const SUBJECTS = [
   {
@@ -327,8 +222,8 @@ const SUBJECTS = [
   },
 ];
 
-function pdfPath(file) {
-  return "pdfs/" + encodeURIComponent(file);
+function pdfUrl(file) {
+  return BASE_URL + "pdfs/" + encodeURIComponent(file);
 }
 
 function renderList() {
@@ -347,22 +242,21 @@ function renderList() {
     const block = document.createElement("div");
     block.className = "subject-block";
 
-    const header = document.createElement("div");
-    header.className = "subject-header";
-    header.innerHTML = `
+    const hdr = document.createElement("div");
+    hdr.className = "subject-header";
+    hdr.innerHTML = `
       <div class="subject-icon">${sub.icon}</div>
       <div>
         <div class="subject-name">${sub.name}</div>
         <div class="subject-count">${filtered.length} محاضرة</div>
-      </div>
-    `;
-    block.appendChild(header);
+      </div>`;
+    block.appendChild(hdr);
 
     const grid = document.createElement("div");
     grid.className = "lectures-grid";
 
     filtered.forEach(lec => {
-      const path = pdfPath(lec.file);
+      const url = pdfUrl(lec.file);
       const card = document.createElement("div");
       card.className = "lecture-card";
       card.innerHTML = `
@@ -370,12 +264,11 @@ function renderList() {
         <div class="lecture-info">
           <div class="lecture-name">${lec.title}</div>
           <div class="lecture-actions">
-            <button class="btn-sm btn-view" onclick="openModal(${JSON.stringify(lec.title)}, ${JSON.stringify(path)})">👁 عرض</button>
-            <a class="btn-sm btn-dl" href="${path}" target="_blank" rel="noopener">⬇️ تحميل</a>
-            <button class="btn-sm btn-ai" onclick="toggleAiPicker(event, ${JSON.stringify(lec.title)}, ${JSON.stringify(path)})">✨ لخّص</button>
+            <a class="btn-sm btn-view" href="${url}" target="_blank" rel="noopener">👁 عرض</a>
+            <a class="btn-sm btn-dl"   href="${url}" target="_blank" rel="noopener" download>⬇️ تحميل</a>
+            <button class="btn-sm btn-ai" onclick="toggleAiPicker(event, ${JSON.stringify(url)})">✨ لخّص</button>
           </div>
-        </div>
-      `;
+        </div>`;
       grid.appendChild(card);
     });
 
@@ -388,107 +281,10 @@ function renderList() {
   }
 }
 
-// PDF viewer state
-let pdfDoc = null, currentPage = 1, totalPages = 0, rendering = false;
-
-async function openModal(title, path) {
-  document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modal").classList.add("open");
-  document.getElementById("dlBtn").href = path;
-  document.getElementById("pdfArea").innerHTML = '<div class="pdf-status">جارٍ تحميل الملف...</div>';
-  document.getElementById("btnPrev").disabled = true;
-  document.getElementById("btnNext").disabled = true;
-  document.getElementById("pageInfo").textContent = "—";
-  pdfDoc = null; currentPage = 1;
-
-  try {
-    const loadingTask = pdfjsLib.getDocument({
-      url: path,
-      cMapUrl: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/",
-      cMapPacked: true
-    });
-    pdfDoc = await loadingTask.promise;
-    totalPages = pdfDoc.numPages;
-    document.getElementById("pdfArea").innerHTML = "";
-    await renderPage(currentPage);
-    updateNav();
-  } catch (err) {
-    document.getElementById("pdfArea").innerHTML = `
-      <div class="pdf-status">
-        <div style="font-size:38px;margin-bottom:10px">⚠️</div>
-        <div>تعذّر تحميل الملف مباشرة.</div>
-        <div style="margin-top:8px">
-          <a href="${path}" target="_blank" rel="noopener"
-             style="color:var(--accent);font-weight:700;text-decoration:underline">
-            اضغط هنا لفتح الملف ↗
-          </a>
-        </div>
-      </div>`;
-  }
-}
-
-async function renderPage(num) {
-  if (!pdfDoc || rendering) return;
-  rendering = true;
-  try {
-    const page = await pdfDoc.getPage(num);
-    const area = document.getElementById("pdfArea");
-    const areaWidth = area.clientWidth - 16;
-    const viewport0 = page.getViewport({ scale: 1 });
-    const scale = Math.max(1, areaWidth / viewport0.width);
-    const viewport = page.getViewport({ scale });
-    const wrap = document.createElement("div");
-    wrap.className = "pdf-page-wrap";
-    const canvas = document.createElement("canvas");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    wrap.appendChild(canvas);
-    area.appendChild(wrap);
-    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
-  } finally {
-    rendering = false;
-  }
-}
-
-function updateNav() {
-  document.getElementById("btnPrev").disabled = currentPage <= 1;
-  document.getElementById("btnNext").disabled = currentPage >= totalPages;
-  document.getElementById("pageInfo").textContent = `صفحة ${currentPage} من ${totalPages}`;
-}
-
-async function changePage(delta) {
-  if (!pdfDoc) return;
-  const next = currentPage + delta;
-  if (next < 1 || next > totalPages) return;
-  currentPage = next;
-  const area = document.getElementById("pdfArea");
-  area.innerHTML = "";
-  await renderPage(currentPage);
-  area.scrollTop = 0;
-  updateNav();
-}
-
-function closeModal() {
-  document.getElementById("modal").classList.remove("open");
-  document.getElementById("pdfArea").innerHTML = "";
-  pdfDoc = null;
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById("modal").parentElement) closeModal();
-}
-
-document.addEventListener("keydown", e => {
-  if (!document.getElementById("modal").classList.contains("open")) return;
-  if (e.key === "Escape") closeModal();
-  if (e.key === "ArrowLeft" || e.key === "ArrowUp") changePage(-1);
-  if (e.key === "ArrowRight" || e.key === "ArrowDown") changePage(1);
-});
-
-// AI Picker
+// ── AI Picker ──
 let activePickerEl = null;
 
-function toggleAiPicker(e, title, path) {
+function toggleAiPicker(e, url) {
   e.stopPropagation();
   if (activePickerEl) {
     activePickerEl.remove();
@@ -502,27 +298,21 @@ function toggleAiPicker(e, title, path) {
   const btn = e.currentTarget;
   btn._pickerOpen = true;
 
-  const pdfUrl = new URL(path, location.href).href;
-  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:
-• أهم النقاط والمفاهيم الرئيسية
-• الأمثلة والتطبيقات المذكورة`;
+  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n• خلاصة في 3 أسطر`;
 
-  const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt + '\n\n' + pdfUrl)}`;
-  const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt + '\n\nرابط المحاضرة: ' + pdfUrl)}`;
+  const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt + '\n\n' + url)}`;
+  const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt + '\n\nرابط المحاضرة: ' + url)}`;
 
   const picker = document.createElement('div');
   picker.className = 'ai-picker';
   picker.innerHTML = `
     <div class="ai-picker-title">اختار الـ AI</div>
     <a class="ai-option" href="${claudeUrl}" target="_blank" rel="noopener">
-      <span class="ai-logo claude">🤖</span>
-      <span>Claude</span>
+      <span class="ai-logo claude">🤖</span><span>Claude</span>
     </a>
     <a class="ai-option" href="${gptUrl}" target="_blank" rel="noopener">
-      <span class="ai-logo gpt">💬</span>
-      <span>ChatGPT</span>
-    </a>
-  `;
+      <span class="ai-logo gpt">💬</span><span>ChatGPT</span>
+    </a>`;
 
   btn.style.position = 'relative';
   btn.appendChild(picker);
