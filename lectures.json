@@ -1,25 +1,130 @@
 {
- "items": [
-  {
-   "subject": "محاسبة ضريبية",
-   "title": "محاضرة",
-   "file": "محاضرة.pdf",
-   "added": "2026-10-19T12:51:54.762Z",
-   "driveId": "1-Oly-BqEQMCSn21lqEqRWbSndN1KRhO-"
-  },
-  {
-   "subject": "احصاء تطبيقي",
-   "title": "محاضرة",
-   "file": "محاضرة_1q_iM.pdf",
-   "added": "2026-10-19T12:52:01.276Z",
-   "driveId": "1q_iM-myPmTV8eXkn0Hrb7ty8AAG_0Wur"
-  },
-  {
-   "subject": "احصاء تطبيقي",
-   "title": "محاضرة",
-   "file": "محاضرة_1KltJ.pdf",
-   "added": "2026-10-19T12:52:07.560Z",
-   "driveId": "1KltJv5UZoS7hl9bAH_MRTWT2ZEXqY6Cz"
-  }
- ]
+  "items": [
+    {
+      "subject": "محاسبة ضريبية",
+      "title": "محاضرة",
+      "file": "محاضرة.pdf",
+      "added": "2026-10-19T12:51:54.762Z",
+      "driveId": "1-Oly-BqEQMCSn21lqEqRWbSndN1KRhO-"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة",
+      "file": "محاضرة_1q_iM.pdf",
+      "added": "2026-10-19T12:52:01.276Z",
+      "driveId": "1q_iM-myPmTV8eXkn0Hrb7ty8AAG_0Wur"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة",
+      "file": "محاضرة_1KltJ.pdf",
+      "added": "2026-10-19T12:52:07.560Z",
+      "driveId": "1KltJv5UZoS7hl9bAH_MRTWT2ZEXqY6Cz"
+    },
+    {
+      "subject": "مبادئ المالية العامة",
+      "title": "االاسبوع(2) فصل التمهيدى ماليةعامة",
+      "file": "االاسبوع(2)_فصل_التمهيدى_ماليةعامة_1oEkqzwvYfEu.pdf",
+      "added": "2026-10-19T13:59:37.061Z",
+      "driveId": "1oEkqzwvYfEurgYhPp2SotNtnf8zHBZsE"
+    },
+    {
+      "subject": "المراجعة",
+      "title": "المحاضرة الأولى (مادة المراجعة)-1",
+      "file": "المحاضرة_الأولى_(مادة_المراجعة)-1_1aIkZB2fWMFm.pdf",
+      "added": "2026-10-19T13:59:38.830Z",
+      "driveId": "1aIkZB2fWMFm1uNfFp4H-lJ35Zj-qqJBQ"
+    },
+    {
+      "subject": "محاسبة ضريبية",
+      "title": "الفرقة الرابعة - المحاسبة الضريبية",
+      "file": "الفرقة_الرابعة_-_المحاسبة_الضريبية_1OMH5P2EuD06.pdf",
+      "added": "2026-10-19T13:59:40.973Z",
+      "driveId": "1OMH5P2EuD06_M8labgiIzPreBAfaSrth"
+    },
+    {
+      "subject": "مبادئ المالية العامة",
+      "title": "االاسبوع(3) الفصل الاول ماليةعامة",
+      "file": "االاسبوع(3)_الفصل_الاول_ماليةعامة_1ihelwjVKE7_.pdf",
+      "added": "2026-10-19T13:59:42.755Z",
+      "driveId": "1ihelwjVKE7_17XPs_nmn7NkGu3F4TerX"
+    },
+    {
+      "subject": "المراجعة",
+      "title": "المحاضرة الثانية  (مادة المراجعة)",
+      "file": "المحاضرة_الثانية_(مادة_المراجعة)_1EfVvIl-fgpo.pdf",
+      "added": "2026-10-19T13:59:44.908Z",
+      "driveId": "1EfVvIl-fgpo4L3T--KZLNcbHO_CgZV9U"
+    },
+    {
+      "subject": "محاسبة ضريبية",
+      "title": "المحاضرة الثانية- المحاسبة الضريبية",
+      "file": "المحاضرة_الثانية-_المحاسبة_الضريبية_1aDWhxYgVu1a.pdf",
+      "added": "2026-10-19T13:59:48.473Z",
+      "driveId": "1aDWhxYgVu1anRYcXWIs-GlQuKpnqxVAD"
+    },
+    {
+      "subject": "مبادئ المالية العامة",
+      "title": "االاسبوع(4) الفصل الاول ماليةعامة",
+      "file": "االاسبوع(4)_الفصل_الاول_ماليةعامة_1X4DM5XheQbC.pdf",
+      "added": "2026-10-19T13:59:50.244Z",
+      "driveId": "1X4DM5XheQbCMCWSfI95hSYG39mJTWP1W"
+    },
+    {
+      "subject": "المحاسبة المالية المتقدمة",
+      "title": "المحاضرة - الثانية محاسبة مالية متقدمة",
+      "file": "المحاضرة_-_الثانية_محاسبة_مالية_متقدمة_1gyqqW45P1nl.pdf",
+      "added": "2026-10-19T13:59:51.871Z",
+      "driveId": "1gyqqW45P1nl1zrpNWv2t8F_c6tlb6jHS"
+    },
+    {
+      "subject": "المراجعة",
+      "title": "المحاضرة الثالثة (مادة المراجعة)-2",
+      "file": "المحاضرة_الثالثة_(مادة_المراجعة)-2_1fF4KLrZ3BPH.pdf",
+      "added": "2026-10-19T13:59:53.473Z",
+      "driveId": "1fF4KLrZ3BPHgRMO5hiyN_rcE27rFUKsM"
+    },
+    {
+      "subject": "مبادئ المالية العامة",
+      "title": "االاسبوع(5) الفصل الثاني ماليةعامة",
+      "file": "االاسبوع(5)_الفصل_الثاني_ماليةعامة_1-hFujTjn2Wh.pdf",
+      "added": "2026-10-19T13:59:56.244Z",
+      "driveId": "1-hFujTjn2WhkDmb60CRI9Td9Eke9vbhd"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة 1 - مفاهيم أساسية في علم الإحصاء",
+      "file": "محاضرة_1_-_مفاهيم_أساسية_في_علم_الإحصاء_1B1vk28IOXL8.pdf",
+      "added": "2026-10-19T13:59:57.761Z",
+      "driveId": "1B1vk28IOXL82bcCUqkYpxlxU8Z2C861P"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة 2 - تصنيف البيانات وتبويبها",
+      "file": "محاضرة_2_-_تصنيف_البيانات_وتبويبها_1qpDmcjLWP_6.pdf",
+      "added": "2026-10-19T13:59:59.183Z",
+      "driveId": "1qpDmcjLWP_6-NskJi2BWCIFIu_RnfzHo"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة 3 - طرق عرض البيانات",
+      "file": "محاضرة_3_-_طرق_عرض_البيانات_14h68WH6m03r.pdf",
+      "added": "2026-10-19T14:00:01.058Z",
+      "driveId": "14h68WH6m03rCtV9NGxxXY-aJ01sza7EC"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة 4 - طرق عرض البيانات باستخدام الاكسل",
+      "file": "محاضرة_4_-_طرق_عرض_البيانات_باستخدام_الاكسل_1q2jEqaJJZdE.pdf",
+      "added": "2026-10-19T14:00:02.479Z",
+      "driveId": "1q2jEqaJJZdEVvevuY2TA9H9FGvgb76oh"
+    },
+    {
+      "subject": "احصاء تطبيقي",
+      "title": "محاضرة 5 - مقاييس النزعة المركزية",
+      "file": "محاضرة_5_-_مقاييس_النزعة_المركزية_19G1HWGPC2ql.pdf",
+      "added": "2026-10-19T14:00:03.809Z",
+      "driveId": "19G1HWGPC2qlmi5_vr8F14qTtLeqL5hOR"
+    }
+  ]
 }
