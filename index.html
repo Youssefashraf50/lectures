@@ -4,344 +4,277 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>محاضرات 8/8</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap">
+<meta name="description" content="محاضرات الفرقة الرابعة محاسبة — المعهد المصري لأكاديمية الإسكندرية">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <style>
-:root {
-  --bg: #f0f2f8; --surface: #ffffff; --card: #ffffff; --border: #dde1f0;
-  --accent: #3a5bd9; --accent2: #6b42c4;
-  --accent-soft: rgba(58,91,217,.10); --text: #1a1d2e; --muted: #6b7199;
-  --header-bg: #1a1d2e; --header-text: #e8eaf6; --tag-bg: rgba(58,91,217,.12);
-  color-scheme: light;
+:root{
+  --bg:#f3f5f0; --surface:#fff; --ink:#17211c; --muted:#5f6d65; --rule:#cfd8cd;
+  --accent:#1f6b4f; --accent-ink:#fff; --soft:#e4efe8; --hover:#f7faf6;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f1117; --surface: #1a1d27; --card: #22263a; --border: #2e3350;
-    --accent: #5b7ef8; --accent2: #9b7dea;
-    --accent-soft: rgba(91,126,248,.12); --text: #e8eaf6; --muted: #8b90b8;
-    --header-bg: #111420; --header-text: #e8eaf6; --tag-bg: rgba(91,126,248,.15);
-    color-scheme: dark;
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1411; --surface:#161f1a; --ink:#e7ede8; --muted:#97a69c; --rule:#2b3a31;
+    --accent:#52c28f; --accent-ink:#0c1a13; --soft:#1d2c24; --hover:#1a251f;
+    color-scheme:dark;
   }
 }
-:root[data-theme="dark"] {
-  --bg: #0f1117; --surface: #1a1d27; --card: #22263a; --border: #2e3350;
-  --accent: #5b7ef8; --accent2: #9b7dea;
-  --accent-soft: rgba(91,126,248,.12); --text: #e8eaf6; --muted: #8b90b8;
-  --header-bg: #111420; --header-text: #e8eaf6; --tag-bg: rgba(91,126,248,.15);
-  color-scheme: dark;
+:root[data-theme="dark"]{
+  --bg:#0e1411; --surface:#161f1a; --ink:#e7ede8; --muted:#97a69c; --rule:#2b3a31;
+  --accent:#52c28f; --accent-ink:#0c1a13; --soft:#1d2c24; --hover:#1a251f;
+  color-scheme:dark;
 }
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-padding-top:150px}
+body{
+  font-family:'IBM Plex Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;
+  padding-top:env(safe-area-inset-top,0px);
+}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:860px;margin:0 auto;padding-inline:max(18px,env(safe-area-inset-right,0px)) max(18px,env(safe-area-inset-left,0px))}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-  height: 100%;
-  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
-  background: var(--bg); color: var(--text); direction: rtl;
+/* Masthead */
+.mast{padding-block:36px 22px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.mast h1{
+  font-size:clamp(2rem,6vw,3rem);font-weight:700;line-height:1.15;letter-spacing:-.01em;
+  display:inline-block;padding-bottom:6px;
+  border-bottom:4px double var(--accent);   /* double underline = accounting "total" mark */
 }
+.mast p{margin-top:12px;color:var(--muted);font-size:.95rem;max-width:34ch}
+.theme{
+  flex-shrink:0;width:42px;height:42px;border-radius:50%;border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);font-size:18px;cursor:pointer;
+}
+.theme:hover{border-color:var(--accent)}
 
-header {
-  background: var(--header-bg); color: var(--header-text);
-  padding: 14px max(16px, env(safe-area-inset-right,0px)) 14px max(16px, env(safe-area-inset-left,0px));
-  padding-block: 14px;
-  display: flex; align-items: center; gap: 12px;
-  position: sticky; top: env(safe-area-inset-top,0px); z-index: 50;
-  border-bottom: 1px solid rgba(255,255,255,.06);
+/* Sticky tools */
+.tools{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:var(--bg);padding-block:10px 12px;border-bottom:1px solid var(--rule);
 }
-body::before {
-  content: ""; position: fixed; inset: 0 0 auto;
-  height: env(safe-area-inset-top,0px); z-index: 51; background: var(--header-bg);
+.search{position:relative}
+.search input{
+  width:100%;height:46px;padding:0 44px 0 16px;border-radius:10px;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink);
+  font:inherit;font-size:.95rem;
 }
-.logo {
-  width: 40px; height: 40px; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+.search input::placeholder{color:var(--muted)}
+.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--soft)}
+.search svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+.chips{display:flex;gap:8px;margin-top:10px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex-shrink:0;padding:6px 14px;border-radius:999px;border:1px solid var(--rule);
+  background:var(--surface);color:var(--ink);font:inherit;font-size:.85rem;font-weight:500;cursor:pointer;
 }
-.site-title { font-size: 1.05rem; font-weight: 900; letter-spacing: -.01em; }
-.site-sub { font-size: 0.72rem; color: rgba(232,234,246,.55); margin-top: 2px; }
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 
-.container {
-  max-width: 980px; margin: 0 auto;
-  padding-left: max(16px, env(safe-area-inset-left,0px));
-  padding-right: max(16px, env(safe-area-inset-right,0px));
-  padding-block: 24px 64px;
+/* Subjects */
+main{padding-block:8px 72px}
+.subject{margin-top:28px}
+.subject summary{
+  list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;
+  padding-block:10px;border-bottom:4px double var(--rule);
 }
+.subject summary::-webkit-details-marker{display:none}
+.s-icon{font-size:22px;width:36px;text-align:center}
+.s-name{font-size:1.2rem;font-weight:700;flex:1}
+.s-count{font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.s-caret{width:16px;height:16px;color:var(--muted);transition:transform .2s}
+.subject[open] .s-caret{transform:rotate(180deg)}
 
-.search-wrap { position: relative; margin-bottom: 24px; }
-.search-wrap input {
-  width: 100%; background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 12px; padding: 11px 16px 11px 44px;
-  color: var(--text); font-size: 0.9rem; font-family: inherit;
-  outline: none; transition: border-color .2s; direction: rtl;
+/* Lecture rows (ledger style) */
+.lec{
+  display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:6px 14px;
+  padding:14px 4px;border-bottom:1px solid var(--rule);
 }
-.search-wrap input:focus { border-color: var(--accent); }
-.search-wrap input::placeholder { color: var(--muted); }
-.search-icon {
-  position: absolute; left: 14px; top: 50%;
-  transform: translateY(-50%); color: var(--muted); font-size: 17px; pointer-events: none;
+.lec:hover{background:var(--hover)}
+.num{text-align:center;line-height:1.2}
+.num b{display:block;font-size:1.5rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.num span{font-size:.72rem;color:var(--muted)}
+.title{font-size:.98rem;font-weight:600;line-height:1.5}
+.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;
+  border-radius:8px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);
+  font:inherit;font-size:.82rem;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap;
 }
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{opacity:.9}
 
-.subject-block { margin-bottom: 28px; }
-.subject-header {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-  padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-}
-.subject-icon {
-  width: 34px; height: 34px; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;
-}
-.subject-name { font-size: 0.97rem; font-weight: 700; }
-.subject-count { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+.empty{text-align:center;padding:64px 16px;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:4px}
 
-.lectures-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-.lecture-card {
-  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-  padding: 13px; display: flex; align-items: flex-start; gap: 10px;
-  transition: border-color .18s, box-shadow .18s;
+/* AI menu */
+.menu{
+  position:fixed;z-index:100;min-width:200px;background:var(--surface);color:var(--ink);
+  border:1px solid var(--rule);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.2);overflow:hidden;
 }
-.lecture-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(58,91,217,.10); }
-.pdf-icon {
-  width: 36px; height: 36px; flex-shrink: 0; background: var(--accent-soft);
-  border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
-}
-.lecture-info { flex: 1; min-width: 0; }
-.lecture-name { font-size: 0.85rem; font-weight: 600; line-height: 1.45; }
-.lecture-actions { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
-.btn-sm {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 5px 13px; border-radius: 7px;
-  font-size: 0.75rem; font-weight: 700;
-  cursor: pointer; border: none; font-family: inherit;
-  text-decoration: none; transition: opacity .18s; white-space: nowrap;
-}
-.btn-sm:hover { opacity: .78; }
-.btn-view { background: var(--accent-soft); color: var(--accent); }
-.btn-dl   { background: var(--tag-bg); color: var(--accent2); }
-.btn-ai   {
-  background: linear-gradient(135deg, rgba(58,91,217,.15), rgba(107,66,196,.15));
-  color: var(--text); border: 1px solid var(--border);
-}
-.btn-ai:hover { border-color: var(--accent); opacity: 1; }
+.menu small{display:block;padding:10px 14px 4px;color:var(--muted);font-size:.75rem}
+.menu a{display:block;padding:11px 14px;color:inherit;text-decoration:none;font-weight:600;font-size:.9rem}
+.menu a:hover{background:var(--soft)}
 
-/* AI picker */
-.ai-picker {
-  position: fixed;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(0,0,0,.25);
-  z-index: 9999;
-  min-width: 210px;
-  overflow: hidden;
-  animation: fadeIn .15s ease;
+@media (max-width:620px){
+  .lec{grid-template-columns:48px 1fr}
+  .acts{grid-column:1 / -1;justify-content:flex-start}
+  .btn{flex:1;min-width:0}
 }
-@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-.ai-picker-title {
-  font-size: 0.72rem; font-weight: 700; color: var(--muted);
-  padding: 10px 14px 5px; letter-spacing: .06em;
-}
-.ai-option {
-  display: flex; align-items: center; gap: 10px;
-  padding: 11px 14px; transition: background .12s;
-  text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600;
-}
-.ai-option:hover { background: var(--accent-soft); }
-.ai-logo {
-  width: 28px; height: 28px; border-radius: 7px;
-  display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
-}
-.ai-logo.claude { background: linear-gradient(135deg,#d97757,#c96442); }
-.ai-logo.gpt    { background: #10a37f; }
-
-.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-
-@media (max-width: 600px) {
-  .lectures-grid { grid-template-columns: 1fr; }
-}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">📚</div>
-  <div>
-    <div class="site-title">8/8</div>
-    <div class="site-sub">المعهد المصري لأكاديمية الإسكندرية — الفرقة الرابعة محاسبة</div>
-  </div>
-</header>
-
-<div class="container">
-  <div class="search-wrap">
-    <input type="text" placeholder="ابحث عن محاضرة..." id="searchInput" oninput="renderList()">
-    <span class="search-icon">🔍</span>
-  </div>
-  <div id="main"></div>
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <h1>محاضرات 8/8</h1>
+      <p>المعهد المصري لأكاديمية الإسكندرية، الفرقة الرابعة محاسبة</p>
+    </div>
+    <button class="theme" id="themeBtn" aria-label="تبديل الوضع الداكن">🌓</button>
+  </header>
 </div>
+
+<div class="tools">
+  <div class="wrap">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="q" placeholder="ابحث عن محاضرة أو مادة" autocomplete="off">
+    </label>
+    <div class="chips" id="chips"></div>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
 
 <script>
 const BASE = "https://youssefashraf50.github.io/lectures/pdfs/";
-
-function viewerUrl(file) {
-  const direct = BASE + encodeURIComponent(file);
-  return "https://docs.google.com/viewer?url=" + encodeURIComponent(direct) + "&embedded=false";
-}
-function directUrl(file) {
-  return BASE + encodeURIComponent(file);
-}
+const directUrl = f => BASE + encodeURIComponent(f);
+const viewerUrl = f => "https://docs.google.com/viewer?url=" + encodeURIComponent(directUrl(f)) + "&embedded=false";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const SUBJECTS = [
-  {
-    name: "احصاء تطبيقي", icon: "📊",
-    lectures: [
-      { title: "محاضرة 1 — مفاهيم أساسية في علم الإحصاء",        file: "محاضرة_1_-_مفاهيم_أساسية_في_علم_الإحصاء.pdf" },
-      { title: "محاضرة 2 — تصنيف البيانات وتبويبها",              file: "محاضرة_2_-_تصنيف_البيانات_وتبويبها.pdf" },
-      { title: "محاضرة 3 — طرق عرض البيانات",                    file: "محاضرة_3_-_طرق_عرض_البيانات.pdf" },
-      { title: "محاضرة 4 — طرق عرض البيانات باستخدام الاكسل",    file: "محاضرة_4_-_طرق_عرض_البيانات_باستخدام_الاكسل.pdf" },
-      { title: "محاضرة 5 — مقاييس النزعة المركزية",               file: "محاضرة_5_-_مقاييس_النزعة_المركزية.pdf" },
-    ]
-  },
-  {
-    name: "محاسبة ضريبية", icon: "🧾",
-    lectures: [
-      { title: "محاضرة 1 — المحاسبة الضريبية (الفرقة الرابعة)",   file: "الفرقة_الرابعة_-_المحاسبة_الضريبية_.pdf" },
-      { title: "محاضرة 2 — دخل الشخص الطبيعي من المرتبات",       file: "المحاضرة_الثانية-_المحاسبة_الضريبية.pdf" },
-      { title: "محاضرة 3 — محاسبة ضريبية",                        file: "المحاضرة_الثالثة_-_محاسبة_ضريبية.pdf" },
-    ]
-  },
-  {
-    name: "مبادئ المالية العامة", icon: "🏛️",
-    lectures: [
-      { title: "الأسبوع 2 — الفصل التمهيدي",        file: "االاسبوع_2__فصل_التمهيدى_ماليةعامة.pdf" },
-      { title: "الأسبوع 3 — الفصل الأول",            file: "االاسبوع_3__الفصل_الاول_ماليةعامة.pdf" },
-      { title: "الأسبوع 4 — الفصل الأول (تابع)",     file: "االاسبوع_4__الفصل_الاول_ماليةعامة.pdf" },
-      { title: "الأسبوع 5 — الفصل الثاني",           file: "االاسبوع_5__الفصل_الثاني_ماليةعامة.pdf" },
-    ]
-  },
-  {
-    name: "المحاسبة المالية المتقدمة", icon: "📈",
-    lectures: [
-      { title: "محاضرة 1 — توصيف المقرر وتكوين شركات الأشخاص",  file: "المحاضرة_الأولى_-_محاسبة_مالية_متقدمة.pdf" },
-      { title: "محاضرة 1 — تكوين شركات الأشخاص (نسخة أخرى)",   file: "المحاضرة_الأولى-_محاسبة_مالية_متقدمة.pdf" },
-      { title: "محاضرة 2 — الحصة العينية وتكوين الشركات",       file: "المحاضرة_-_الثانية_محاسبة_مالية_متقدمة.pdf" },
-    ]
-  },
-  {
-    name: "المراجعة", icon: "🔍",
-    lectures: [
-      { title: "محاضرة 1 — المفاهيم الأساسية للمراجعة الخارجية", file: "المحاضرة_الأولى__مادة_المراجعة_-1.pdf" },
-      { title: "محاضرة 2 — أنواع المراجعة وأهدافها",             file: "المحاضرة_الثانية___مادة_المراجعة_.pdf" },
-      { title: "محاضرة 3 — مادة المراجعة",                       file: "المحاضرة_الثالثة__مادة_المراجعة_-2.pdf" },
-    ]
-  },
+  { name: "احصاء تطبيقي", icon: "📊", lectures: [
+    { title: "محاضرة 1 — مفاهيم أساسية في علم الإحصاء",        file: "محاضرة_1_-_مفاهيم_أساسية_في_علم_الإحصاء.pdf" },
+    { title: "محاضرة 2 — تصنيف البيانات وتبويبها",              file: "محاضرة_2_-_تصنيف_البيانات_وتبويبها.pdf" },
+    { title: "محاضرة 3 — طرق عرض البيانات",                    file: "محاضرة_3_-_طرق_عرض_البيانات.pdf" },
+    { title: "محاضرة 4 — طرق عرض البيانات باستخدام الاكسل",    file: "محاضرة_4_-_طرق_عرض_البيانات_باستخدام_الاكسل.pdf" },
+    { title: "محاضرة 5 — مقاييس النزعة المركزية",               file: "محاضرة_5_-_مقاييس_النزعة_المركزية.pdf" },
+  ]},
+  { name: "محاسبة ضريبية", icon: "🧾", lectures: [
+    { title: "محاضرة 1 — المحاسبة الضريبية (الفرقة الرابعة)",   file: "الفرقة_الرابعة_-_المحاسبة_الضريبية_.pdf" },
+    { title: "محاضرة 2 — دخل الشخص الطبيعي من المرتبات",       file: "المحاضرة_الثانية-_المحاسبة_الضريبية.pdf" },
+    { title: "محاضرة 3 — محاسبة ضريبية",                        file: "المحاضرة_الثالثة_-_محاسبة_ضريبية.pdf" },
+  ]},
+  { name: "مبادئ المالية العامة", icon: "🏛️", lectures: [
+    { title: "الأسبوع 2 — الفصل التمهيدي",        file: "االاسبوع_2__فصل_التمهيدى_ماليةعامة.pdf" },
+    { title: "الأسبوع 3 — الفصل الأول",            file: "االاسبوع_3__الفصل_الاول_ماليةعامة.pdf" },
+    { title: "الأسبوع 4 — الفصل الأول (تابع)",     file: "االاسبوع_4__الفصل_الاول_ماليةعامة.pdf" },
+    { title: "الأسبوع 5 — الفصل الثاني",           file: "االاسبوع_5__الفصل_الثاني_ماليةعامة.pdf" },
+  ]},
+  { name: "المحاسبة المالية المتقدمة", icon: "📈", lectures: [
+    { title: "محاضرة 1 — توصيف المقرر وتكوين شركات الأشخاص",  file: "المحاضرة_الأولى_-_محاسبة_مالية_متقدمة.pdf" },
+    { title: "محاضرة 1 — تكوين شركات الأشخاص (نسخة أخرى)",   file: "المحاضرة_الأولى-_محاسبة_مالية_متقدمة.pdf" },
+    { title: "محاضرة 2 — الحصة العينية وتكوين الشركات",       file: "المحاضرة_-_الثانية_محاسبة_مالية_متقدمة.pdf" },
+  ]},
+  { name: "المراجعة", icon: "🔍", lectures: [
+    { title: "محاضرة 1 — المفاهيم الأساسية للمراجعة الخارجية", file: "المحاضرة_الأولى__مادة_المراجعة_-1.pdf" },
+    { title: "محاضرة 2 — أنواع المراجعة وأهدافها",             file: "المحاضرة_الثانية___مادة_المراجعة_.pdf" },
+    { title: "محاضرة 3 — مادة المراجعة",                       file: "المحاضرة_الثالثة__مادة_المراجعة_-2.pdf" },
+  ]},
 ];
 
-function renderList() {
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  const main = document.getElementById("main");
-  main.innerHTML = "";
-  let total = 0;
+let activeSubject = -1; // -1 = all
+const $q = document.getElementById("q");
+const $main = document.getElementById("main");
+const $chips = document.getElementById("chips");
 
-  SUBJECTS.forEach(sub => {
-    const filtered = sub.lectures.filter(l =>
-      !q || l.title.toLowerCase().includes(q) || sub.name.toLowerCase().includes(q)
-    );
-    if (!filtered.length) return;
-    total += filtered.length;
+function parseTitle(t, i) {
+  const m = t.match(/^(محاضرة|الأسبوع)\s*(\d+)\s*—\s*(.+)$/);
+  return m ? { kind: m[1] === "الأسبوع" ? "أسبوع" : "محاضرة", n: m[2], name: m[3] }
+           : { kind: "محاضرة", n: i + 1, name: t };
+}
 
-    const block = document.createElement("div");
-    block.className = "subject-block";
+function renderChips() {
+  const items = [{ name: "الكل" }, ...SUBJECTS];
+  $chips.innerHTML = items.map((s, i) =>
+    `<button class="chip" data-i="${i - 1}" aria-pressed="${i - 1 === activeSubject}">${esc(s.name)}</button>`
+  ).join("");
+}
+$chips.addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  activeSubject = +b.dataset.i; renderChips(); render();
+});
 
-    const hdr = document.createElement("div");
-    hdr.className = "subject-header";
-    hdr.innerHTML = `
-      <div class="subject-icon">${sub.icon}</div>
-      <div>
-        <div class="subject-name">${sub.name}</div>
-        <div class="subject-count">${filtered.length} محاضرة</div>
+function render() {
+  const q = $q.value.trim().toLowerCase();
+  let total = 0, html = "";
+  SUBJECTS.forEach((sub, si) => {
+    if (activeSubject !== -1 && activeSubject !== si) return;
+    const list = sub.lectures.filter(l => !q || l.title.toLowerCase().includes(q) || sub.name.toLowerCase().includes(q));
+    if (!list.length) return;
+    total += list.length;
+    html += `<details class="subject" open>
+      <summary>
+        <span class="s-icon">${sub.icon}</span>
+        <span class="s-name">${esc(sub.name)}</span>
+        <span class="s-count">${list.length} محاضرة</span>
+        <svg class="s-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>`;
+    list.forEach((lec, i) => {
+      const p = parseTitle(lec.title, i);
+      html += `<div class="lec">
+        <div class="num"><b>${esc(p.n)}</b><span>${p.kind}</span></div>
+        <div class="title">${esc(p.name)}</div>
+        <div class="acts">
+          <a class="btn primary" href="${viewerUrl(lec.file)}" target="_blank" rel="noopener">عرض</a>
+          <a class="btn" href="${directUrl(lec.file)}" target="_blank" rel="noopener" download>تحميل</a>
+          <button class="btn" data-pdf="${esc(directUrl(lec.file))}">لخّص بالذكاء الاصطناعي</button>
+        </div>
       </div>`;
-    block.appendChild(hdr);
-
-    const grid = document.createElement("div");
-    grid.className = "lectures-grid";
-
-    filtered.forEach(lec => {
-      const card = document.createElement("div");
-      card.className = "lecture-card";
-
-      const vUrl = viewerUrl(lec.file);
-      const dUrl = directUrl(lec.file);
-
-      // نبني الـ card ونضيف الـ button منفصل عشان نربط الـ onclick بشكل صح
-      card.innerHTML = `
-        <div class="pdf-icon">📄</div>
-        <div class="lecture-info">
-          <div class="lecture-name">${lec.title}</div>
-          <div class="lecture-actions">
-            <a class="btn-sm btn-view" href="${vUrl}" target="_blank" rel="noopener">👁 عرض</a>
-            <a class="btn-sm btn-dl"   href="${dUrl}" target="_blank" rel="noopener">⬇️ تحميل</a>
-            <button class="btn-sm btn-ai">✨ لخّص</button>
-          </div>
-        </div>`;
-
-      // نربط الـ onclick على الـ button مباشرة بدون inline HTML
-      const aiBtn = card.querySelector('.btn-ai');
-      aiBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        showAiPicker(this, dUrl);
-      });
-
-      grid.appendChild(card);
     });
-
-    block.appendChild(grid);
-    main.appendChild(block);
+    html += `</details>`;
   });
-
-  if (!total) {
-    main.innerHTML = `<div class="empty"><div style="font-size:44px">🔍</div><div>مفيش نتايج</div></div>`;
-  }
+  $main.innerHTML = total ? html
+    : `<div class="empty"><b>مفيش نتايج</b>جرّب كلمة تانية أو اختار "الكل".</div>`;
 }
+$q.addEventListener("input", render);
 
-// ── AI Picker ──
-function showAiPicker(btn, pdfUrl) {
-  // امسح أي picker موجود
-  document.querySelectorAll('.ai-picker').forEach(p => p.remove());
+/* AI menu */
+function closeMenu() { document.querySelectorAll(".menu").forEach(m => m.remove()); }
+$main.addEventListener("click", e => {
+  const btn = e.target.closest("[data-pdf]"); if (!btn) return;
+  e.stopPropagation(); closeMenu();
+  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n${btn.dataset.pdf}`;
+  const menu = document.createElement("div");
+  menu.className = "menu";
+  menu.innerHTML = `<small>افتح التلخيص في</small>
+    <a href="https://claude.ai/new?q=${encodeURIComponent(prompt)}" target="_blank" rel="noopener">Claude</a>
+    <a href="https://chatgpt.com/?q=${encodeURIComponent(prompt)}" target="_blank" rel="noopener">ChatGPT</a>`;
+  document.body.appendChild(menu);
+  const r = btn.getBoundingClientRect(), h = menu.offsetHeight, w = menu.offsetWidth;
+  const top = innerHeight - r.bottom > h + 8 ? r.bottom + 6 : r.top - h - 6;
+  const left = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8);
+  menu.style.top = Math.max(8, top) + "px"; menu.style.left = left + "px";
+});
+document.addEventListener("click", closeMenu);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
+addEventListener("scroll", closeMenu, { passive: true });
 
-  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n${pdfUrl}`;
-  const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt)}`;
-  const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
+/* Theme toggle */
+const root = document.documentElement;
+try { const t = localStorage.getItem("theme"); if (t) root.dataset.theme = t; } catch (_) {}
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", root.dataset.theme); } catch (_) {}
+});
 
-  const picker = document.createElement('div');
-  picker.className = 'ai-picker';
-  picker.innerHTML = `
-    <div class="ai-picker-title">اختار الـ AI</div>
-    <a class="ai-option" href="${claudeUrl}" target="_blank" rel="noopener">
-      <span class="ai-logo claude">🤖</span><span>Claude</span>
-    </a>
-    <a class="ai-option" href="${gptUrl}" target="_blank" rel="noopener">
-      <span class="ai-logo gpt">💬</span><span>ChatGPT</span>
-    </a>`;
-
-  document.body.appendChild(picker);
-
-  // حساب الموضع
-  const rect = btn.getBoundingClientRect();
-  const ph = picker.offsetHeight || 130;
-  const spaceBelow = window.innerHeight - rect.bottom;
-  const top = spaceBelow > ph + 8 ? rect.bottom + 6 : rect.top - ph - 6;
-  const right = window.innerWidth - rect.right;
-
-  picker.style.top   = Math.max(8, top) + "px";
-  picker.style.right = Math.max(8, right) + "px";
-
-  // إغلاق عند الضغط في أي مكان تاني
-  setTimeout(() => {
-    document.addEventListener('click', function close() {
-      document.querySelectorAll('.ai-picker').forEach(p => p.remove());
-      document.removeEventListener('click', close);
-    }, { once: true });
-  }, 10);
-}
-
-renderList();
+renderChips(); render();
 </script>
 </body>
 </html>
