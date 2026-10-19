@@ -248,7 +248,7 @@ function render() {
         <div><div class="s-name">${esc(sub.name)}</div><div class="s-count">${list.length} محاضرة</div></div>
       </div><div class="grid">`;
     list.forEach((lec, i) => {
-      const p = parseTitle(lec.title, i);
+      const p = parseTitle(lec.title, sub.lectures.indexOf(lec));
       html += `<article class="card">
         <div class="c-top">
           <div class="badge"><b>${esc(p.n)}</b><span>${p.kind}</span></div>
@@ -298,7 +298,23 @@ document.getElementById("themeBtn").addEventListener("click", () => {
   try { localStorage.setItem("theme", root.dataset.theme); } catch (_) {}
 });
 
+/* محاضرات الكلاس روم (بتتضاف تلقائي في lectures.json) */
+async function loadAuto() {
+  try {
+    const r = await fetch("https://youssefashraf50.github.io/lectures/lectures.json?v=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) return;
+    const d = await r.json();
+    (d.items || []).forEach(it => {
+      let s = SUBJECTS.find(x => x.name === it.subject);
+      if (!s) { s = { name: it.subject, icon: "acc", lectures: [] }; SUBJECTS.push(s); }
+      s.lectures.push({ title: it.title, file: it.file });
+    });
+    renderStats(); renderChips(); render();
+  } catch (_) {}
+}
+
 renderStats(); renderChips(); render();
+loadAuto();
 </script>
 </body>
 </html>
