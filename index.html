@@ -121,13 +121,13 @@ body::before {
 }
 .btn-ai:hover { border-color: var(--accent); opacity: 1; }
 
-/* AI picker — fixed to viewport so nothing clips it */
+/* AI picker */
 .ai-picker {
   position: fixed;
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(0,0,0,.22);
+  box-shadow: 0 12px 36px rgba(0,0,0,.25);
   z-index: 9999;
   min-width: 210px;
   overflow: hidden;
@@ -140,7 +140,7 @@ body::before {
 }
 .ai-option {
   display: flex; align-items: center; gap: 10px;
-  padding: 11px 14px; cursor: pointer; transition: background .12s;
+  padding: 11px 14px; transition: background .12s;
   text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600;
 }
 .ai-option:hover { background: var(--accent-soft); }
@@ -179,7 +179,6 @@ body::before {
 <script>
 const BASE = "https://youssefashraf50.github.io/lectures/pdfs/";
 
-// Google Docs Viewer — يعرض PDF في المتصفح بدون تحميل
 function viewerUrl(file) {
   const direct = BASE + encodeURIComponent(file);
   return "https://docs.google.com/viewer?url=" + encodeURIComponent(direct) + "&embedded=false";
@@ -266,16 +265,29 @@ function renderList() {
     filtered.forEach(lec => {
       const card = document.createElement("div");
       card.className = "lecture-card";
+
+      const vUrl = viewerUrl(lec.file);
+      const dUrl = directUrl(lec.file);
+
+      // نبني الـ card ونضيف الـ button منفصل عشان نربط الـ onclick بشكل صح
       card.innerHTML = `
         <div class="pdf-icon">📄</div>
         <div class="lecture-info">
           <div class="lecture-name">${lec.title}</div>
           <div class="lecture-actions">
-            <a class="btn-sm btn-view" href="${viewerUrl(lec.file)}" target="_blank" rel="noopener">👁 عرض</a>
-            <a class="btn-sm btn-dl"   href="${directUrl(lec.file)}" target="_blank" rel="noopener">⬇️ تحميل</a>
-            <button class="btn-sm btn-ai" onclick="showAiPicker(event, ${JSON.stringify(directUrl(lec.file))})">✨ لخّص</button>
+            <a class="btn-sm btn-view" href="${vUrl}" target="_blank" rel="noopener">👁 عرض</a>
+            <a class="btn-sm btn-dl"   href="${dUrl}" target="_blank" rel="noopener">⬇️ تحميل</a>
+            <button class="btn-sm btn-ai">✨ لخّص</button>
           </div>
         </div>`;
+
+      // نربط الـ onclick على الـ button مباشرة بدون inline HTML
+      const aiBtn = card.querySelector('.btn-ai');
+      aiBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        showAiPicker(this, dUrl);
+      });
+
       grid.appendChild(card);
     });
 
@@ -288,21 +300,10 @@ function renderList() {
   }
 }
 
-// ── AI Picker (fixed position — مش بيتأثرش بأي overflow) ──
-let pickerEl = null;
-
-function showAiPicker(e, pdfUrl) {
-  e.stopPropagation();
-
-  // لو في picker مفتوح على نفس الزرار — اقفله
-  if (pickerEl) {
-    pickerEl.remove();
-    pickerEl = null;
-    if (e.currentTarget === pickerEl?._btn) return;
-  }
-
-  const btn = e.currentTarget;
-  const rect = btn.getBoundingClientRect();
+// ── AI Picker ──
+function showAiPicker(btn, pdfUrl) {
+  // امسح أي picker موجود
+  document.querySelectorAll('.ai-picker').forEach(p => p.remove());
 
   const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n• خلاصة في 3 أسطر\n\n${pdfUrl}`;
   const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt)}`;
@@ -320,30 +321,24 @@ function showAiPicker(e, pdfUrl) {
     </a>`;
 
   document.body.appendChild(picker);
-  pickerEl = picker;
-  pickerEl._btn = btn;
 
-  // حسب الـ picker فوق أو تحت الزرار
-  const ph = picker.offsetHeight || 120;
+  // حساب الموضع
+  const rect = btn.getBoundingClientRect();
+  const ph = picker.offsetHeight || 130;
   const spaceBelow = window.innerHeight - rect.bottom;
-  let top = spaceBelow > ph + 8
-    ? rect.bottom + 6
-    : rect.top - ph - 6;
+  const top = spaceBelow > ph + 8 ? rect.bottom + 6 : rect.top - ph - 6;
+  const right = window.innerWidth - rect.right;
 
-  // محاذاة أفقية — نبدأ من يمين الزرار (RTL)
-  let right = window.innerWidth - rect.right;
-  if (right < 8) right = 8;
+  picker.style.top   = Math.max(8, top) + "px";
+  picker.style.right = Math.max(8, right) + "px";
 
-  picker.style.top   = top + "px";
-  picker.style.right = right + "px";
-
-  // إغلاق عند الضغط بره
+  // إغلاق عند الضغط في أي مكان تاني
   setTimeout(() => {
     document.addEventListener('click', function close() {
-      if (pickerEl) { pickerEl.remove(); pickerEl = null; }
+      document.querySelectorAll('.ai-picker').forEach(p => p.remove());
       document.removeEventListener('click', close);
     }, { once: true });
-  }, 0);
+  }, 10);
 }
 
 renderList();
