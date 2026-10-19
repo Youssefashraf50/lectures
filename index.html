@@ -3,78 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>8/8</title>
+<title>محاضرات 8/8</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap">
+
 <style>
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --card: #22263a;
-  --border: #2e3350;
-  --accent: #4f7ef8;
-  --accent2: #7c5cbf;
-  --text: #e8eaf6;
-  --muted: #8b90b8;
+  --bg: #f0f2f8;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --border: #dde1f0;
+  --accent: #3a5bd9;
+  --accent2: #6b42c4;
+  --accent-soft: rgba(58,91,217,.10);
+  --text: #1a1d2e;
+  --muted: #6b7199;
+  --header-bg: #1a1d2e;
+  --header-text: #e8eaf6;
+  --tag-bg: rgba(58,91,217,.12);
+  color-scheme: light;
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1117; --surface: #1a1d27; --card: #22263a; --border: #2e3350;
+    --accent: #5b7ef8; --accent2: #9b7dea;
+    --accent-soft: rgba(91,126,248,.12);
+    --text: #e8eaf6; --muted: #8b90b8;
+    --header-bg: #111420; --header-text: #e8eaf6;
+    --tag-bg: rgba(91,126,248,.15);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1117; --surface: #1a1d27; --card: #22263a; --border: #2e3350;
+  --accent: #5b7ef8; --accent2: #9b7dea;
+  --accent-soft: rgba(91,126,248,.12);
+  --text: #e8eaf6; --muted: #8b90b8;
+  --header-bg: #111420; --header-text: #e8eaf6;
+  --tag-bg: rgba(91,126,248,.15);
+  color-scheme: dark;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+html, body {
+  height: 100%;
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  direction: rtl;
+}
 
 header {
-  background: linear-gradient(135deg, #1a1d27, #1e2238);
-  border-bottom: 1px solid var(--border);
-  padding: 18px 24px;
-  display: flex; align-items: center; gap: 14px;
-  position: sticky; top: 0; z-index: 100;
+  background: var(--header-bg);
+  color: var(--header-text);
+  padding: 14px max(16px, env(safe-area-inset-right, 0px)) 14px max(16px, env(safe-area-inset-left, 0px));
+  padding-block: 14px;
+  display: flex; align-items: center; gap: 12px;
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  border-bottom: 1px solid rgba(255,255,255,.06);
 }
-.logo { width: 42px; height: 42px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-.site-title { font-size: 1.2rem; font-weight: 700; }
-.site-sub { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px); z-index: 51;
+  background: var(--header-bg);
+}
+.logo {
+  width: 40px; height: 40px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.site-title { font-size: 1.05rem; font-weight: 900; letter-spacing: -.01em; }
+.site-sub { font-size: 0.72rem; color: rgba(232,234,246,.55); margin-top: 2px; }
 
-.container { max-width: 960px; margin: 0 auto; padding: 26px 18px 60px; }
+.container {
+  max-width: 980px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
 
-.search-wrap { position: relative; margin-bottom: 22px; }
-.search-wrap input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 44px 11px 16px; color: var(--text); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color .2s; direction: rtl; }
+.search-wrap { position: relative; margin-bottom: 24px; }
+.search-wrap input {
+  width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 12px; padding: 11px 16px 11px 44px;
+  color: var(--text); font-size: 0.9rem; font-family: inherit;
+  outline: none; transition: border-color .2s; direction: rtl;
+}
 .search-wrap input:focus { border-color: var(--accent); }
 .search-wrap input::placeholder { color: var(--muted); }
-.search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 17px; pointer-events: none; }
+.search-icon {
+  position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%); color: var(--muted); font-size: 17px; pointer-events: none;
+}
 
-.subject-block { margin-bottom: 30px; }
-.subject-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.subject-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.subject-name { font-size: 1rem; font-weight: 700; }
-.subject-count { font-size: 0.75rem; color: var(--muted); margin-top: 1px; }
+.subject-block { margin-bottom: 28px; }
+.subject-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+}
+.subject-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.subject-name { font-size: 0.97rem; font-weight: 700; }
+.subject-count { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
 
 .lectures-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-.lecture-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; display: flex; align-items: flex-start; gap: 11px; }
-.pdf-icon { width: 38px; height: 38px; flex-shrink: 0; background: rgba(79,126,248,.12); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 19px; }
+.lecture-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 13px; display: flex; align-items: flex-start; gap: 10px;
+  transition: border-color .18s, box-shadow .18s;
+}
+.lecture-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(58,91,217,.10); }
+.pdf-icon {
+  width: 36px; height: 36px; flex-shrink: 0; background: var(--accent-soft);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
 .lecture-info { flex: 1; min-width: 0; }
-.lecture-name { font-size: 0.88rem; font-weight: 600; line-height: 1.4; }
-.lecture-actions { display: flex; gap: 6px; margin-top: 8px; }
-.btn-sm { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; text-decoration: none; transition: opacity .2s; }
-.btn-sm:hover { opacity: .8; }
-.btn-view { background: rgba(79,126,248,.18); color: var(--accent); }
-.btn-dl { background: rgba(124,92,191,.18); color: #a78bfa; }
+.lecture-name { font-size: 0.85rem; font-weight: 600; line-height: 1.45; }
+.lecture-actions { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+.btn-sm {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 13px; border-radius: 7px;
+  font-size: 0.75rem; font-weight: 700;
+  cursor: pointer; border: none; font-family: inherit;
+  text-decoration: none; transition: opacity .18s;
+}
+.btn-sm:hover { opacity: .78; }
+.btn-view { background: var(--accent-soft); color: var(--accent); }
+.btn-dl { background: var(--tag-bg); color: var(--accent2); }
+.btn-ai {
+  background: linear-gradient(135deg, rgba(58,91,217,.13), rgba(107,66,196,.13));
+  color: var(--text); border: 1px solid var(--border); position: relative;
+}
+.btn-ai:hover { border-color: var(--accent); opacity: 1; }
+
+/* AI picker popup */
+.ai-picker {
+  position: absolute; bottom: calc(100% + 6px); right: 0;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  z-index: 300; min-width: 200px; overflow: hidden;
+  animation: fadeIn .15s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+.ai-picker-title {
+  font-size: 0.72rem; font-weight: 700; color: var(--muted);
+  padding: 9px 14px 5px; text-transform: uppercase; letter-spacing: .06em;
+}
+.ai-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; cursor: pointer; transition: background .12s;
+  text-decoration: none; color: var(--text); font-size: 0.85rem; font-weight: 600;
+}
+.ai-option:hover { background: var(--accent-soft); }
+.ai-logo {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+}
+.ai-logo.claude { background: linear-gradient(135deg,#d97757,#c96442); }
+.ai-logo.gpt    { background: #10a37f; }
 
 .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
 
 /* Modal */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 200; align-items: center; justify-content: center; }
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.72); z-index: 200;
+  align-items: flex-end; justify-content: center;
+}
 .modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 95vw; max-width: 860px; max-height: 93vh; display: flex; flex-direction: column; overflow: hidden; }
-.modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.modal-title { font-weight: 700; font-size: 0.95rem; }
-.modal-close { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; transition: color .15s; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px 18px 0 0; width: 100%; max-width: 900px; height: 92dvh;
+  display: flex; flex-direction: column; overflow: hidden;
+  animation: slideUp .22s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 18px; border-bottom: 1px solid var(--border); flex-shrink: 0; gap: 10px;
+}
+.modal-title { font-weight: 700; font-size: 0.9rem; flex: 1; min-width: 0; }
+.modal-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--muted); font-size: 22px; line-height: 1; transition: color .15s; flex-shrink: 0;
+}
 .modal-close:hover { color: var(--text); }
-.modal-body { flex: 1; overflow: hidden; min-height: 0; }
-.modal-body iframe { width: 100%; height: 100%; border: none; display: block; min-height: 60vh; }
-.modal-foot { padding: 11px 18px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.86rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; text-decoration: none; transition: opacity .2s; }
-.btn:hover { opacity: .85; }
-.btn-primary { background: var(--accent); color: #fff; }
-.btn-ghost { background: var(--card); color: var(--text); border: 1px solid var(--border); }
 
-@media (max-width: 480px) {
+.pdf-area {
+  flex: 1; overflow-y: auto; overflow-x: hidden; background: #525659;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 10px; padding: 12px 8px; min-height: 0;
+}
+.pdf-page-wrap canvas {
+  display: block; max-width: 100%; border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.4);
+}
+.pdf-status {
+  color: #ccc; font-size: 0.85rem; text-align: center;
+  padding: 30px 16px; font-family: inherit;
+}
+.pdf-nav {
+  flex-shrink: 0; background: var(--surface); border-top: 1px solid var(--border);
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+}
+.pdf-nav-info { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.nav-btns { display: flex; gap: 6px; }
+.btn-nav {
+  background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px;
+  font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit;
+  color: var(--text); transition: border-color .15s, opacity .15s;
+}
+.btn-nav:disabled { opacity: .38; cursor: not-allowed; }
+.btn-nav:not(:disabled):hover { border-color: var(--accent); }
+.btn-dl-full {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--accent); color: #fff; border-radius: 8px; padding: 7px 16px;
+  font-size: 0.82rem; font-weight: 700; text-decoration: none; font-family: inherit; transition: opacity .18s;
+}
+.btn-dl-full:hover { opacity: .85; }
+
+@media (max-width: 600px) {
   .lectures-grid { grid-template-columns: 1fr; }
-  .modal { border-radius: 0; width: 100vw; max-height: 100dvh; }
+  .modal { border-radius: 14px 14px 0 0; height: 96dvh; }
 }
 </style>
 </head>
@@ -90,83 +248,90 @@ header {
 
 <div class="container">
   <div class="search-wrap">
-    <input type="text" placeholder="ابحث عن محاضرة..." id="searchInput" oninput="render()">
+    <input type="text" placeholder="ابحث عن محاضرة..." id="searchInput" oninput="renderList()">
     <span class="search-icon">🔍</span>
   </div>
   <div id="main"></div>
 </div>
 
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
   <div class="modal">
     <div class="modal-head">
       <span class="modal-title" id="modalTitle">—</span>
-      <button class="modal-close" onclick="closeModal()">✕</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="إغلاق">✕</button>
     </div>
-    <div class="modal-body">
-      <iframe id="modalFrame" src=""></iframe>
+    <div class="pdf-area" id="pdfArea">
+      <div class="pdf-status" id="pdfStatus">جارٍ تحميل الملف...</div>
     </div>
-    <div class="modal-foot">
-      <a id="modalDl" href="#" download class="btn btn-primary">⬇️ تحميل PDF</a>
-      <button class="btn btn-ghost" onclick="closeModal()">إغلاق</button>
+    <div class="pdf-nav">
+      <div class="nav-btns">
+        <button class="btn-nav" id="btnPrev" onclick="changePage(-1)" disabled>◀ السابق</button>
+        <button class="btn-nav" id="btnNext" onclick="changePage(1)" disabled>التالي ▶</button>
+      </div>
+      <div class="pdf-nav-info" id="pageInfo">—</div>
+      <a id="dlBtn" href="#" class="btn-dl-full">⬇️ تحميل</a>
     </div>
   </div>
 </div>
 
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 const SUBJECTS = [
   {
-    name: "احصاء تطبيقي",
-    icon: "📊",
+    name: "احصاء تطبيقي", icon: "📊",
     lectures: [
-      { title: "محاضرة 1 — مفاهيم أساسية في علم الإحصاء", file: "محاضرة_1_-_مفاهيم_أساسية_في_علم_الإحصاء.pdf" },
-      { title: "محاضرة 2 — تصنيف البيانات وتبويبها", file: "محاضرة_2_-_تصنيف_البيانات_وتبويبها.pdf" },
-      { title: "محاضرة 3 — طرق عرض البيانات", file: "محاضرة_3_-_طرق_عرض_البيانات.pdf" },
-      { title: "محاضرة 4 — طرق عرض البيانات باستخدام الاكسل", file: "محاضرة_4_-_طرق_عرض_البيانات_باستخدام_الاكسل.pdf" },
-      { title: "محاضرة 5 — مقاييس النزعة المركزية", file: "محاضرة_5_-_مقاييس_النزعة_المركزية.pdf" },
+      { title: "محاضرة 1 — مفاهيم أساسية في علم الإحصاء",        file: "محاضرة_1_-_مفاهيم_أساسية_في_علم_الإحصاء.pdf" },
+      { title: "محاضرة 2 — تصنيف البيانات وتبويبها",              file: "محاضرة_2_-_تصنيف_البيانات_وتبويبها.pdf" },
+      { title: "محاضرة 3 — طرق عرض البيانات",                    file: "محاضرة_3_-_طرق_عرض_البيانات.pdf" },
+      { title: "محاضرة 4 — طرق عرض البيانات باستخدام الاكسل",    file: "محاضرة_4_-_طرق_عرض_البيانات_باستخدام_الاكسل.pdf" },
+      { title: "محاضرة 5 — مقاييس النزعة المركزية",               file: "محاضرة_5_-_مقاييس_النزعة_المركزية.pdf" },
     ]
   },
   {
-    name: "محاسبة ضريبية",
-    icon: "🧾",
+    name: "محاسبة ضريبية", icon: "🧾",
     lectures: [
-      { title: "محاضرة 1 — المحاسبة الضريبية (الفرقة الرابعة)", file: "الفرقة_الرابعة_-_المحاسبة_الضريبية_.pdf" },
-      { title: "محاضرة 2 — دخل الشخص الطبيعي من المرتبات", file: "المحاضرة_الثانية-_المحاسبة_الضريبية.pdf" },
-      { title: "محاضرة 3 — محاسبة ضريبية", file: "المحاضرة_الثالثة_-_محاسبة_ضريبية.pdf" },
+      { title: "محاضرة 1 — المحاسبة الضريبية (الفرقة الرابعة)",   file: "الفرقة_الرابعة_-_المحاسبة_الضريبية_.pdf" },
+      { title: "محاضرة 2 — دخل الشخص الطبيعي من المرتبات",       file: "المحاضرة_الثانية-_المحاسبة_الضريبية.pdf" },
+      { title: "محاضرة 3 — محاسبة ضريبية",                        file: "المحاضرة_الثالثة_-_محاسبة_ضريبية.pdf" },
     ]
   },
   {
-    name: "مبادئ المالية العامة",
-    icon: "🏛️",
+    name: "مبادئ المالية العامة", icon: "🏛️",
     lectures: [
-      { title: "الأسبوع 2 — الفصل التمهيدي", file: "االاسبوع_2__فصل_التمهيدى_ماليةعامة.pdf" },
-      { title: "الأسبوع 3 — الفصل الأول", file: "االاسبوع_3__الفصل_الاول_ماليةعامة.pdf" },
-      { title: "الأسبوع 4 — الفصل الأول (تابع)", file: "االاسبوع_4__الفصل_الاول_ماليةعامة.pdf" },
-      { title: "الأسبوع 5 — الفصل الثاني", file: "االاسبوع_5__الفصل_الثاني_ماليةعامة.pdf" },
+      { title: "الأسبوع 2 — الفصل التمهيدي",        file: "االاسبوع_2__فصل_التمهيدى_ماليةعامة.pdf" },
+      { title: "الأسبوع 3 — الفصل الأول",            file: "االاسبوع_3__الفصل_الاول_ماليةعامة.pdf" },
+      { title: "الأسبوع 4 — الفصل الأول (تابع)",     file: "االاسبوع_4__الفصل_الاول_ماليةعامة.pdf" },
+      { title: "الأسبوع 5 — الفصل الثاني",           file: "االاسبوع_5__الفصل_الثاني_ماليةعامة.pdf" },
     ]
   },
   {
-    name: "المحاسبة المالية المتقدمة",
-    icon: "📈",
+    name: "المحاسبة المالية المتقدمة", icon: "📈",
     lectures: [
-      { title: "محاضرة 1 — توصيف المقرر وتكوين شركات الأشخاص", file: "المحاضرة_الأولى_-_محاسبة_مالية_متقدمة.pdf" },
-      { title: "محاضرة 1 — تكوين شركات الأشخاص (نسخة أخرى)", file: "المحاضرة_الأولى-_محاسبة_مالية_متقدمة.pdf" },
-      { title: "محاضرة 2 — الحصة العينية وتكوين الشركات", file: "المحاضرة_-_الثانية_محاسبة_مالية_متقدمة.pdf" },
+      { title: "محاضرة 1 — توصيف المقرر وتكوين شركات الأشخاص",  file: "المحاضرة_الأولى_-_محاسبة_مالية_متقدمة.pdf" },
+      { title: "محاضرة 1 — تكوين شركات الأشخاص (نسخة أخرى)",   file: "المحاضرة_الأولى-_محاسبة_مالية_متقدمة.pdf" },
+      { title: "محاضرة 2 — الحصة العينية وتكوين الشركات",       file: "المحاضرة_-_الثانية_محاسبة_مالية_متقدمة.pdf" },
     ]
   },
   {
-    name: "المراجعة",
-    icon: "🔍",
+    name: "المراجعة", icon: "🔍",
     lectures: [
       { title: "محاضرة 1 — المفاهيم الأساسية للمراجعة الخارجية", file: "المحاضرة_الأولى__مادة_المراجعة_-1.pdf" },
-      { title: "محاضرة 2 — أنواع المراجعة وأهدافها", file: "المحاضرة_الثانية___مادة_المراجعة_.pdf" },
-      { title: "محاضرة 3 — مادة المراجعة", file: "المحاضرة_الثالثة__مادة_المراجعة_-2.pdf" },
+      { title: "محاضرة 2 — أنواع المراجعة وأهدافها",             file: "المحاضرة_الثانية___مادة_المراجعة_.pdf" },
+      { title: "محاضرة 3 — مادة المراجعة",                       file: "المحاضرة_الثالثة__مادة_المراجعة_-2.pdf" },
     ]
   },
 ];
 
-function p(file) { return "pdfs/" + encodeURIComponent(file); }
+function pdfPath(file) {
+  return "pdfs/" + encodeURIComponent(file);
+}
 
-function render() {
+function renderList() {
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   const main = document.getElementById("main");
   main.innerHTML = "";
@@ -181,19 +346,23 @@ function render() {
 
     const block = document.createElement("div");
     block.className = "subject-block";
-    block.innerHTML = `
-      <div class="subject-header">
-        <div class="subject-icon">${sub.icon}</div>
-        <div>
-          <div class="subject-name">${sub.name}</div>
-          <div class="subject-count">${filtered.length} محاضرة</div>
-        </div>
+
+    const header = document.createElement("div");
+    header.className = "subject-header";
+    header.innerHTML = `
+      <div class="subject-icon">${sub.icon}</div>
+      <div>
+        <div class="subject-name">${sub.name}</div>
+        <div class="subject-count">${filtered.length} محاضرة</div>
       </div>
-      <div class="lectures-grid"></div>
     `;
-    const grid = block.querySelector(".lectures-grid");
+    block.appendChild(header);
+
+    const grid = document.createElement("div");
+    grid.className = "lectures-grid";
+
     filtered.forEach(lec => {
-      const path = p(lec.file);
+      const path = pdfPath(lec.file);
       const card = document.createElement("div");
       card.className = "lecture-card";
       card.innerHTML = `
@@ -201,13 +370,16 @@ function render() {
         <div class="lecture-info">
           <div class="lecture-name">${lec.title}</div>
           <div class="lecture-actions">
-            <button class="btn-sm btn-view" onclick="openModal('${lec.title}', '${path}')">👁 عرض</button>
-            <a class="btn-sm btn-dl" href="${path}" download="${lec.file}">⬇️ تحميل</a>
+            <button class="btn-sm btn-view" onclick="openModal(${JSON.stringify(lec.title)}, ${JSON.stringify(path)})">👁 عرض</button>
+            <a class="btn-sm btn-dl" href="${path}" target="_blank" rel="noopener">⬇️ تحميل</a>
+            <button class="btn-sm btn-ai" onclick="toggleAiPicker(event, ${JSON.stringify(lec.title)}, ${JSON.stringify(path)})">✨ لخّص</button>
           </div>
         </div>
       `;
       grid.appendChild(card);
     });
+
+    block.appendChild(grid);
     main.appendChild(block);
   });
 
@@ -216,20 +388,156 @@ function render() {
   }
 }
 
-function openModal(title, path) {
+// PDF viewer state
+let pdfDoc = null, currentPage = 1, totalPages = 0, rendering = false;
+
+async function openModal(title, path) {
   document.getElementById("modalTitle").textContent = title;
-  document.getElementById("modalFrame").src = path;
-  document.getElementById("modalDl").href = path;
   document.getElementById("modal").classList.add("open");
+  document.getElementById("dlBtn").href = path;
+  document.getElementById("pdfArea").innerHTML = '<div class="pdf-status">جارٍ تحميل الملف...</div>';
+  document.getElementById("btnPrev").disabled = true;
+  document.getElementById("btnNext").disabled = true;
+  document.getElementById("pageInfo").textContent = "—";
+  pdfDoc = null; currentPage = 1;
+
+  try {
+    const loadingTask = pdfjsLib.getDocument({
+      url: path,
+      cMapUrl: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/",
+      cMapPacked: true
+    });
+    pdfDoc = await loadingTask.promise;
+    totalPages = pdfDoc.numPages;
+    document.getElementById("pdfArea").innerHTML = "";
+    await renderPage(currentPage);
+    updateNav();
+  } catch (err) {
+    document.getElementById("pdfArea").innerHTML = `
+      <div class="pdf-status">
+        <div style="font-size:38px;margin-bottom:10px">⚠️</div>
+        <div>تعذّر تحميل الملف مباشرة.</div>
+        <div style="margin-top:8px">
+          <a href="${path}" target="_blank" rel="noopener"
+             style="color:var(--accent);font-weight:700;text-decoration:underline">
+            اضغط هنا لفتح الملف ↗
+          </a>
+        </div>
+      </div>`;
+  }
 }
 
-function closeModal(e) {
-  if (e && e.target !== document.getElementById("modal")) return;
+async function renderPage(num) {
+  if (!pdfDoc || rendering) return;
+  rendering = true;
+  try {
+    const page = await pdfDoc.getPage(num);
+    const area = document.getElementById("pdfArea");
+    const areaWidth = area.clientWidth - 16;
+    const viewport0 = page.getViewport({ scale: 1 });
+    const scale = Math.max(1, areaWidth / viewport0.width);
+    const viewport = page.getViewport({ scale });
+    const wrap = document.createElement("div");
+    wrap.className = "pdf-page-wrap";
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    wrap.appendChild(canvas);
+    area.appendChild(wrap);
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+  } finally {
+    rendering = false;
+  }
+}
+
+function updateNav() {
+  document.getElementById("btnPrev").disabled = currentPage <= 1;
+  document.getElementById("btnNext").disabled = currentPage >= totalPages;
+  document.getElementById("pageInfo").textContent = `صفحة ${currentPage} من ${totalPages}`;
+}
+
+async function changePage(delta) {
+  if (!pdfDoc) return;
+  const next = currentPage + delta;
+  if (next < 1 || next > totalPages) return;
+  currentPage = next;
+  const area = document.getElementById("pdfArea");
+  area.innerHTML = "";
+  await renderPage(currentPage);
+  area.scrollTop = 0;
+  updateNav();
+}
+
+function closeModal() {
   document.getElementById("modal").classList.remove("open");
-  document.getElementById("modalFrame").src = "";
+  document.getElementById("pdfArea").innerHTML = "";
+  pdfDoc = null;
 }
 
-render();
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById("modal").parentElement) closeModal();
+}
+
+document.addEventListener("keydown", e => {
+  if (!document.getElementById("modal").classList.contains("open")) return;
+  if (e.key === "Escape") closeModal();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") changePage(-1);
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") changePage(1);
+});
+
+// AI Picker
+let activePickerEl = null;
+
+function toggleAiPicker(e, title, path) {
+  e.stopPropagation();
+  if (activePickerEl) {
+    activePickerEl.remove();
+    activePickerEl = null;
+    if (e.currentTarget._pickerOpen) {
+      e.currentTarget._pickerOpen = false;
+      return;
+    }
+  }
+
+  const btn = e.currentTarget;
+  btn._pickerOpen = true;
+
+  const pdfUrl = new URL(path, location.href).href;
+  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:
+• أهم النقاط والمفاهيم الرئيسية
+• الأمثلة والتطبيقات المذكورة`;
+
+  const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt + '\n\n' + pdfUrl)}`;
+  const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt + '\n\nرابط المحاضرة: ' + pdfUrl)}`;
+
+  const picker = document.createElement('div');
+  picker.className = 'ai-picker';
+  picker.innerHTML = `
+    <div class="ai-picker-title">اختار الـ AI</div>
+    <a class="ai-option" href="${claudeUrl}" target="_blank" rel="noopener">
+      <span class="ai-logo claude">🤖</span>
+      <span>Claude</span>
+    </a>
+    <a class="ai-option" href="${gptUrl}" target="_blank" rel="noopener">
+      <span class="ai-logo gpt">💬</span>
+      <span>ChatGPT</span>
+    </a>
+  `;
+
+  btn.style.position = 'relative';
+  btn.appendChild(picker);
+  activePickerEl = picker;
+
+  setTimeout(() => {
+    document.addEventListener('click', function closePicker() {
+      if (activePickerEl) { activePickerEl.remove(); activePickerEl = null; }
+      btn._pickerOpen = false;
+      document.removeEventListener('click', closePicker);
+    }, { once: true });
+  }, 0);
+}
+
+renderList();
 </script>
 </body>
 </html>
