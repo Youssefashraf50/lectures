@@ -110,38 +110,42 @@ body::before {
   padding: 5px 13px; border-radius: 7px;
   font-size: 0.75rem; font-weight: 700;
   cursor: pointer; border: none; font-family: inherit;
-  text-decoration: none; transition: opacity .18s;
+  text-decoration: none; transition: opacity .18s; white-space: nowrap;
 }
 .btn-sm:hover { opacity: .78; }
 .btn-view { background: var(--accent-soft); color: var(--accent); }
 .btn-dl   { background: var(--tag-bg); color: var(--accent2); }
 .btn-ai   {
-  background: linear-gradient(135deg, rgba(58,91,217,.13), rgba(107,66,196,.13));
-  color: var(--text); border: 1px solid var(--border); position: relative;
+  background: linear-gradient(135deg, rgba(58,91,217,.15), rgba(107,66,196,.15));
+  color: var(--text); border: 1px solid var(--border);
 }
 .btn-ai:hover { border-color: var(--accent); opacity: 1; }
 
-/* AI picker popup */
+/* AI picker — fixed to viewport so nothing clips it */
 .ai-picker {
-  position: absolute; bottom: calc(100% + 6px); right: 0;
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.18);
-  z-index: 300; min-width: 200px; overflow: hidden;
+  position: fixed;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.22);
+  z-index: 9999;
+  min-width: 210px;
+  overflow: hidden;
   animation: fadeIn .15s ease;
 }
-@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 .ai-picker-title {
   font-size: 0.72rem; font-weight: 700; color: var(--muted);
-  padding: 9px 14px 5px; text-transform: uppercase; letter-spacing: .06em;
+  padding: 10px 14px 5px; letter-spacing: .06em;
 }
 .ai-option {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 14px; cursor: pointer; transition: background .12s;
-  text-decoration: none; color: var(--text); font-size: 0.85rem; font-weight: 600;
+  padding: 11px 14px; cursor: pointer; transition: background .12s;
+  text-decoration: none; color: var(--text); font-size: 0.88rem; font-weight: 600;
 }
 .ai-option:hover { background: var(--accent-soft); }
 .ai-logo {
-  width: 26px; height: 26px; border-radius: 6px;
+  width: 28px; height: 28px; border-radius: 7px;
   display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
 }
 .ai-logo.claude { background: linear-gradient(135deg,#d97757,#c96442); }
@@ -173,8 +177,16 @@ body::before {
 </div>
 
 <script>
-// ✅ غيّر ده لرابط موقعك الحقيقي على GitHub Pages
-const BASE_URL = "https://youssefashraf50.github.io/lectures/";
+const BASE = "https://youssefashraf50.github.io/lectures/pdfs/";
+
+// Google Docs Viewer — يعرض PDF في المتصفح بدون تحميل
+function viewerUrl(file) {
+  const direct = BASE + encodeURIComponent(file);
+  return "https://docs.google.com/viewer?url=" + encodeURIComponent(direct) + "&embedded=false";
+}
+function directUrl(file) {
+  return BASE + encodeURIComponent(file);
+}
 
 const SUBJECTS = [
   {
@@ -222,10 +234,6 @@ const SUBJECTS = [
   },
 ];
 
-function pdfUrl(file) {
-  return BASE_URL + "pdfs/" + encodeURIComponent(file);
-}
-
 function renderList() {
   const q = document.getElementById("searchInput").value.trim().toLowerCase();
   const main = document.getElementById("main");
@@ -256,7 +264,6 @@ function renderList() {
     grid.className = "lectures-grid";
 
     filtered.forEach(lec => {
-      const url = pdfUrl(lec.file);
       const card = document.createElement("div");
       card.className = "lecture-card";
       card.innerHTML = `
@@ -264,9 +271,9 @@ function renderList() {
         <div class="lecture-info">
           <div class="lecture-name">${lec.title}</div>
           <div class="lecture-actions">
-            <a class="btn-sm btn-view" href="${url}" target="_blank" rel="noopener">👁 عرض</a>
-            <a class="btn-sm btn-dl"   href="${url}" target="_blank" rel="noopener" download>⬇️ تحميل</a>
-            <button class="btn-sm btn-ai" onclick="toggleAiPicker(event, ${JSON.stringify(url)})">✨ لخّص</button>
+            <a class="btn-sm btn-view" href="${viewerUrl(lec.file)}" target="_blank" rel="noopener">👁 عرض</a>
+            <a class="btn-sm btn-dl"   href="${directUrl(lec.file)}" target="_blank" rel="noopener">⬇️ تحميل</a>
+            <button class="btn-sm btn-ai" onclick="showAiPicker(event, ${JSON.stringify(directUrl(lec.file))})">✨ لخّص</button>
           </div>
         </div>`;
       grid.appendChild(card);
@@ -281,27 +288,25 @@ function renderList() {
   }
 }
 
-// ── AI Picker ──
-let activePickerEl = null;
+// ── AI Picker (fixed position — مش بيتأثرش بأي overflow) ──
+let pickerEl = null;
 
-function toggleAiPicker(e, url) {
+function showAiPicker(e, pdfUrl) {
   e.stopPropagation();
-  if (activePickerEl) {
-    activePickerEl.remove();
-    activePickerEl = null;
-    if (e.currentTarget._pickerOpen) {
-      e.currentTarget._pickerOpen = false;
-      return;
-    }
+
+  // لو في picker مفتوح على نفس الزرار — اقفله
+  if (pickerEl) {
+    pickerEl.remove();
+    pickerEl = null;
+    if (e.currentTarget === pickerEl?._btn) return;
   }
 
   const btn = e.currentTarget;
-  btn._pickerOpen = true;
+  const rect = btn.getBoundingClientRect();
 
-  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n• خلاصة في 3 أسطر`;
-
-  const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt + '\n\n' + url)}`;
-  const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt + '\n\nرابط المحاضرة: ' + url)}`;
+  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n• خلاصة في 3 أسطر\n\n${pdfUrl}`;
+  const claudeUrl = `https://claude.ai/new?q=${encodeURIComponent(prompt)}`;
+  const gptUrl    = `https://chatgpt.com/?q=${encodeURIComponent(prompt)}`;
 
   const picker = document.createElement('div');
   picker.className = 'ai-picker';
@@ -314,15 +319,29 @@ function toggleAiPicker(e, url) {
       <span class="ai-logo gpt">💬</span><span>ChatGPT</span>
     </a>`;
 
-  btn.style.position = 'relative';
-  btn.appendChild(picker);
-  activePickerEl = picker;
+  document.body.appendChild(picker);
+  pickerEl = picker;
+  pickerEl._btn = btn;
 
+  // حسب الـ picker فوق أو تحت الزرار
+  const ph = picker.offsetHeight || 120;
+  const spaceBelow = window.innerHeight - rect.bottom;
+  let top = spaceBelow > ph + 8
+    ? rect.bottom + 6
+    : rect.top - ph - 6;
+
+  // محاذاة أفقية — نبدأ من يمين الزرار (RTL)
+  let right = window.innerWidth - rect.right;
+  if (right < 8) right = 8;
+
+  picker.style.top   = top + "px";
+  picker.style.right = right + "px";
+
+  // إغلاق عند الضغط بره
   setTimeout(() => {
-    document.addEventListener('click', function closePicker() {
-      if (activePickerEl) { activePickerEl.remove(); activePickerEl = null; }
-      btn._pickerOpen = false;
-      document.removeEventListener('click', closePicker);
+    document.addEventListener('click', function close() {
+      if (pickerEl) { pickerEl.remove(); pickerEl = null; }
+      document.removeEventListener('click', close);
     }, { once: true });
   }, 0);
 }
