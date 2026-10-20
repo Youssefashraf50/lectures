@@ -211,11 +211,71 @@ const $q = document.getElementById("q"), $main = document.getElementById("main")
 const ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
 const ICON_DL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
 
+
 function parseTitle(t, i) {
-  const m = t.match(/^(محاضرة|الأسبوع)\s*(\d+)\s*—\s*(.+)$/);
-  return m ? { kind: m[1] === "الأسبوع" ? "أسبوع" : "محاضرة", n: m[2], name: m[3] }
-           : { kind: "محاضرة", n: i + 1, name: t };
+  const text = String(t || "").trim();
+
+  // الأرقام المكتوبة بالأرقام العربية أو الإنجليزية
+  const numericMatch = text.match(
+    /(?:محاضرة|المحاضرة|الأسبوع|الاسبوع)\s*[-–—]?\s*([0-9٠-٩]+)/i
+  );
+
+  if (numericMatch) {
+    const n = numericMatch[1].replace(/[٠-٩]/g, d =>
+      String("٠١٢٣٤٥٦٧٨٩".indexOf(d))
+    );
+
+    return {
+      kind: /الأسبوع|الاسبوع/.test(text) ? "أسبوع" : "محاضرة",
+      n,
+      name: text.replace(numericMatch[0], "").replace(/^\s*[-–—]\s*/, "").trim()
+    };
+  }
+
+  // الأرقام المكتوبة بالكلمات
+  const normalized = text
+    .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[أإآ]/g, "ا")
+    .replace(/ى/g, "ي")
+    .replace(/[_\-—–()[\]]/g, " ")
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const wordNumbers = [
+    [/المحاضرة\s+الاولى|محاضرة\s+الاولى/, "1"],
+    [/المحاضرة\s+الثانية|محاضرة\s+الثانية/, "2"],
+    [/المحاضرة\s+الثالثة|محاضرة\s+الثالثة/, "3"],
+    [/المحاضرة\s+الرابعة|محاضرة\s+الرابعة/, "4"],
+    [/المحاضرة\s+الخامسة|محاضرة\s+الخامسة/, "5"]
+  ];
+
+  for (const [pattern, number] of wordNumbers) {
+    if (pattern.test(normalized)) {
+      return {
+        kind: "محاضرة",
+        n: number,
+        name: text
+          .replace(/المحاضرة|محاضرة/i, "")
+          .replace(/[-–—]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim()
+      };
+    }
+  }
+
+  const weekMatch = normalized.match(/(?:الاسبوع|اسبوع)\s+(\d+)/);
+  if (weekMatch) {
+    return {
+      kind: "أسبوع",
+      n: weekMatch[1],
+      name: text.replace(/الأسبوع|الاسبوع|اسبوع/i, "").replace(/^\s*\d+\s*[-–—]?\s*/, "").trim()
+    };
+  }
+
+  return { kind: "محاضرة", n: i + 1, name: text };
 }
+
 
 function renderStats() {
   const n = SUBJECTS.reduce((a, s) => a + s.lectures.length, 0);
