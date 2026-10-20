@@ -213,26 +213,24 @@ const ICON_DL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 
 
 
+
 function parseTitle(t, i) {
   const original = String(t || "").trim();
   const normalized = normalizeLectureText(original);
 
-  const kind = /(?:الأسبوع|الاسبوع)/.test(original) ? "أسبوع" : "محاضرة";
+  const isWeek = /(?:الأسبوع|الاسبوع|اسبوع)/.test(original);
+  const kind = isWeek ? "أسبوع" : "محاضرة";
 
-  // استخراج الرقم لو مكتوب بالأرقام
+  // الرقم لو مكتوب بالأرقام
   const numericMatch = normalized.match(
-    /(?:المحاضرة|محاضرة|الأسبوع|الاسبوع)\s*(\d+)/
+    /(?:المحاضرة|محاضرة|الاسبوع|اسبوع)\s*(\d+)/
   );
 
   if (numericMatch) {
-    return {
-      kind,
-      n: numericMatch[1],
-      name: original
-    };
+    return { kind, n: numericMatch[1], name: original };
   }
 
-  // استخراج الرقم لو مكتوب بالكلمات
+  // الرقم لو مكتوب بالكلمات
   const ordinals = [
     { pattern: /(?:المحاضرة|محاضرة)\s+الاولى/, n: "1" },
     { pattern: /(?:المحاضرة|محاضرة)\s+الثانية/, n: "2" },
