@@ -212,57 +212,44 @@ const ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" str
 const ICON_DL  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg>';
 
 
-function parseTitle(t, i) {
-  const text = String(t || "").trim();
 
-  // الأرقام المكتوبة بالأرقام العربية أو الإنجليزية
-  const numericMatch = text.match(
-    /(?:محاضرة|المحاضرة|الأسبوع|الاسبوع)\s*[-–—]?\s*([0-9٠-٩]+)/i
+function parseTitle(t, i) {
+  const original = String(t || "").trim();
+  const normalized = normalizeLectureText(original);
+
+  const kind = /(?:الأسبوع|الاسبوع)/.test(original) ? "أسبوع" : "محاضرة";
+
+  // استخراج الرقم لو مكتوب بالأرقام
+  const numericMatch = normalized.match(
+    /(?:المحاضرة|محاضرة|الأسبوع|الاسبوع)\s*(\d+)/
   );
 
   if (numericMatch) {
-    const n = numericMatch[1].replace(/[٠-٩]/g, d =>
-      String("٠١٢٣٤٥٦٧٨٩".indexOf(d))
-    );
-
     return {
-      kind: /الأسبوع|الاسبوع/.test(text) ? "أسبوع" : "محاضرة",
-      n,
-      name: text.replace(numericMatch[0], "").replace(/^\s*[-–—]\s*/, "").trim()
+      kind,
+      n: numericMatch[1],
+      name: original
     };
   }
 
-  // الأرقام المكتوبة بالكلمات
-  const normalized = text
-    .replace(/[\u064B-\u065F\u0670]/g, "")
-    .replace(/[أإآ]/g, "ا")
-    .replace(/ى/g, "ي")
-    .replace(/[_\-—–()[\]]/g, " ")
-    .replace(/[^\p{L}\p{N}\s]/gu, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  const wordNumbers = [
-    [/المحاضرة\s+الاولى|محاضرة\s+الاولى/, "1"],
-    [/المحاضرة\s+الثانية|محاضرة\s+الثانية/, "2"],
-    [/المحاضرة\s+الثالثة|محاضرة\s+الثالثة/, "3"],
-    [/المحاضرة\s+الرابعة|محاضرة\s+الرابعة/, "4"],
-    [/المحاضرة\s+الخامسة|محاضرة\s+الخامسة/, "5"]
+  // استخراج الرقم لو مكتوب بالكلمات
+  const ordinals = [
+    { pattern: /(?:المحاضرة|محاضرة)\s+الاولى/, n: "1" },
+    { pattern: /(?:المحاضرة|محاضرة)\s+الثانية/, n: "2" },
+    { pattern: /(?:المحاضرة|محاضرة)\s+الثالثة/, n: "3" },
+    { pattern: /(?:المحاضرة|محاضرة)\s+الرابعة/, n: "4" },
+    { pattern: /(?:المحاضرة|محاضرة)\s+الخامسة/, n: "5" }
   ];
 
-  for (const [pattern, number] of wordNumbers) {
-    if (pattern.test(normalized)) {
-      return {
-        kind: "محاضرة",
-        n: number,
-        name: text
-          .replace(/المحاضرة|محاضرة/i, "")
-          .replace(/[-–—]/g, " ")
-          .replace(/\s+/g, " ")
-          .trim()
-      };
+  for (const item of ordinals) {
+    if (item.pattern.test(normalized)) {
+      return { kind: "محاضرة", n: item.n, name: original };
     }
   }
+
+  return { kind, n: i + 1, name: original };
+}
+
 
   const weekMatch = normalized.match(/(?:الاسبوع|اسبوع)\s+(\d+)/);
   if (weekMatch) {
