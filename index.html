@@ -250,20 +250,6 @@ function parseTitle(t, i) {
   return { kind, n: i + 1, name: original };
 }
 
-
-  const weekMatch = normalized.match(/(?:الاسبوع|اسبوع)\s+(\d+)/);
-  if (weekMatch) {
-    return {
-      kind: "أسبوع",
-      n: weekMatch[1],
-      name: text.replace(/الأسبوع|الاسبوع|اسبوع/i, "").replace(/^\s*\d+\s*[-–—]?\s*/, "").trim()
-    };
-  }
-
-  return { kind: "محاضرة", n: i + 1, name: text };
-}
-
-
 function renderStats() {
   const n = SUBJECTS.reduce((a, s) => a + s.lectures.length, 0);
   document.getElementById("stats").innerHTML =
