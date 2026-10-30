@@ -85,7 +85,10 @@ body{font-family:'Cairo','Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg)
 /* Subjects */
 main{padding-block:10px 80px}
 .subject{margin-top:30px}
-.s-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.s-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.s-head-info{flex:1;min-width:120px}
+.b-ai-all{background:var(--soft2);color:var(--accent2);flex:0 0 auto;padding:0 12px;height:40px;border:0;border-radius:11px;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.b-ai-all:hover{opacity:.8}
 .s-icon svg{width:24px;height:24px}
 .s-icon{
   width:44px;height:44px;border-radius:13px;flex-shrink:0;color:var(--accent);
@@ -274,7 +277,8 @@ function render() {
     html += `<section class="subject">
       <div class="s-head">
         <div class="s-icon">${subjIcon(sub.icon)}</div>
-        <div><div class="s-name">${esc(sub.name)}</div><div class="s-count">${list.length} محاضرة</div></div>
+        <div class="s-head-info"><div class="s-name">${esc(sub.name)}</div><div class="s-count">${list.length} محاضرة</div></div>
+        <button class="btn b-ai-all" data-subject="${si}" aria-label="لخّص كل محاضرات مادة ${esc(sub.name)}">✨ لخّص كل المحاضرات</button>
       </div><div class="grid">`;
     list.forEach((lec, i) => {
       const p = parseTitle(lec.title, sub.lectures.indexOf(lec));
@@ -300,9 +304,19 @@ $q.addEventListener("input", render);
 /* AI menu */
 function closeMenu() { document.querySelectorAll(".menu").forEach(m => m.remove()); }
 $main.addEventListener("click", e => {
-  const btn = e.target.closest("[data-pdf]"); if (!btn) return;
+  const btn = e.target.closest("[data-pdf], [data-subject]"); if (!btn) return;
   e.stopPropagation(); closeMenu();
-  const prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n${btn.dataset.pdf}`;
+  let prompt;
+  if (btn.hasAttribute("data-subject")) {
+    const sub = SUBJECTS[Number(btn.dataset.subject)];
+    if (!sub || !sub.lectures.length) return;
+    const lectureLinks = sub.lectures.map((lec, i) =>
+      `${i + 1}. ${lec.title}\n${directUrl(lec.file)}`
+    ).join("\n\n");
+    prompt = `أريد تلخيصًا شاملًا ومنظمًا لجميع محاضرات مادة ${sub.name}. اقرأ المحاضرات كلها، واربط بين موضوعاتها، ونظّم الناتج في عناوين ونقاط واضحة. اشرح المفاهيم المهمة، والقواعد والتعريفات، والأمثلة والتطبيقات، ولا تُسقط أي موضوع أساسي. وفي النهاية أضف مراجعة سريعة بأهم النقاط والأسئلة المحتمل ورودها.\n\nالمحاضرات:\n${lectureLinks}`;
+  } else {
+    prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n${btn.dataset.pdf}`;
+  }
   const menu = document.createElement("div");
   menu.className = "menu";
   menu.innerHTML = `<small>اختار الـ AI</small>
