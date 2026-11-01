@@ -121,7 +121,7 @@ canvas{display:block;max-width:100%;height:auto;background:white;box-shadow:0 5p
     return;
   }
   pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-  pdfjsLib.getDocument({url: parsed.href}).promise.then(document => {
+  pdfjsLib.getDocument({url: parsed.href, cMapUrl: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/", cMapPacked: true, standardFontDataUrl: "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/standard_fonts/"}).promise.then(document => {
     pdf = document;
     renderPage(1);
   }).catch(error => {
