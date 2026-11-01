@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#171923">
+<title>عارض المحاضرات PDF</title>
+<style>
+:root{color-scheme:dark;--bg:#171923;--panel:#242735;--line:#3b4052;--text:#f5f6fa;--muted:#b7bdcc;--accent:#7c9cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.toolbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px max(12px,env(safe-area-inset-right)) 10px max(12px,env(safe-area-inset-left));background:#202331;border-bottom:1px solid var(--line)}
+.group{display:flex;align-items:center;gap:7px;min-width:0}
+button{border:1px solid var(--line);background:#303548;color:var(--text);border-radius:9px;min-width:38px;height:38px;padding:0 11px;font-size:16px;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+#filename{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:34vw}
+#pageInfo{font-size:13px;white-space:nowrap;color:var(--muted);direction:ltr}
+main{padding:14px 10px 28px;display:flex;justify-content:center;align-items:flex-start}
+#pageWrap{width:100%;display:flex;justify-content:center}
+canvas{display:block;max-width:100%;height:auto;background:white;box-shadow:0 5px 24px #0007}
+#status{padding:36px 18px;text-align:center;color:var(--muted);line-height:1.8}
+@media(max-width:480px){.toolbar{gap:5px;padding:8px}.group{gap:5px}button{min-width:34px;height:36px;padding:0 8px}#filename{max-width:25vw;font-size:11px}}
+</style>
+</head>
+<body>
+<header class="toolbar">
+  <div class="group">
+    <button id="back" type="button" aria-label="رجوع" title="رجوع">‹</button>
+    <span id="filename">المحاضرة</span>
+  </div>
+  <div class="group">
+    <button id="prev" type="button" aria-label="الصفحة السابقة" disabled>‹</button>
+    <span id="pageInfo">- / -</span>
+    <button id="next" type="button" aria-label="الصفحة التالية" disabled>›</button>
+  </div>
+  <div class="group">
+    <button id="zoomOut" type="button" aria-label="تصغير">−</button>
+    <button id="zoomIn" type="button" aria-label="تكبير">+</button>
+  </div>
+</header>
+<div id="status" role="status">جاري تحميل المحاضرة...</div>
+<main><div id="pageWrap"><canvas id="pdfCanvas" hidden></canvas></div></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(() => {
+  const status = document.getElementById("status");
+  const canvas = document.getElementById("pdfCanvas");
+  const ctx = canvas.getContext("2d");
+  const pageInfo = document.getElementById("pageInfo");
+  const prev = document.getElementById("prev");
+  const next = document.getElementById("next");
+  const filename = document.getElementById("filename");
+  const params = new URLSearchParams(location.search);
+  const fileUrl = params.get("file");
+  const basePath = new URL("./", location.href).pathname;
+  let pdf = null, pageNumber = 1, scale = 1, rendering = false, pendingPage = null;
+
+  document.getElementById("back").addEventListener("click", () => {
+    if (history.length > 1) history.back();
+    else location.href = "./";
+  });
+
+  function setStatus(message) {
+    status.hidden = false;
+    status.textContent = message;
+    canvas.hidden = true;
+  }
+
+  async function renderPage(number) {
+    if (!pdf) return;
+    if (rendering) { pendingPage = number; return; }
+    rendering = true;
+    try {
+      const page = await pdf.getPage(number);
+      const baseViewport = page.getViewport({scale: 1});
+      const availableWidth = Math.max(280, document.getElementById("pageWrap").clientWidth - 4);
+      const fitScale = Math.min(availableWidth / baseViewport.width, 2);
+      const viewport = page.getViewport({scale: fitScale * scale});
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(viewport.width * ratio);
+      canvas.height = Math.floor(viewport.height * ratio);
+      canvas.style.width = Math.floor(viewport.width) + "px";
+      canvas.style.height = Math.floor(viewport.height) + "px";
+      await page.render({canvasContext: ctx, viewport, transform: ratio !== 1 ? [ratio,0,0,ratio,0,0] : null}).promise;
+      pageNumber = number;
+      pageInfo.textContent = number + " / " + pdf.numPages;
+      prev.disabled = number <= 1;
+      next.disabled = number >= pdf.numPages;
+      status.hidden = true;
+      canvas.hidden = false;
+    } catch (error) {
+      setStatus("تعذّر عرض الصفحة. جرّب تحديث الصفحة أو افتح المحاضرة مرة أخرى.");
+      console.error(error);
+    } finally {
+      rendering = false;
+      if (pendingPage !== null) {
+        const queued = pendingPage;
+        pendingPage = null;
+        renderPage(queued);
+      }
+    }
+  }
+
+  prev.addEventListener("click", () => { if (pageNumber > 1) renderPage(pageNumber - 1); });
+  next.addEventListener("click", () => { if (pdf && pageNumber < pdf.numPages) renderPage(pageNumber + 1); });
+  document.getElementById("zoomIn").addEventListener("click", () => { scale = Math.min(3, scale + .2); renderPage(pageNumber); });
+  document.getElementById("zoomOut").addEventListener("click", () => { scale = Math.max(.6, scale - .2); renderPage(pageNumber); });
+  window.addEventListener("resize", () => { if (pdf) renderPage(pageNumber); });
+
+  if (!fileUrl) { setStatus("رابط المحاضرة غير موجود."); return; }
+  let parsed;
+  try { parsed = new URL(fileUrl, location.href); }
+  catch { setStatus("رابط المحاضرة غير صالح."); return; }
+  if (parsed.origin !== location.origin || !parsed.pathname.startsWith(basePath + "pdfs/")) {
+    setStatus("رابط الملف غير مسموح به.");
+    return;
+  }
+  filename.textContent = decodeURIComponent(parsed.pathname.split("/").pop() || "المحاضرة");
+  if (!window.pdfjsLib) {
+    setStatus("تعذّر تحميل قارئ PDF. تأكد من اتصال الإنترنت ثم أعد المحاولة.");
+    return;
+  }
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  pdfjsLib.getDocument({url: parsed.href}).promise.then(document => {
+    pdf = document;
+    renderPage(1);
+  }).catch(error => {
+    setStatus("تعذّر تحميل ملف المحاضرة. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.");
+    console.error(error);
+  });
+})();
+</script>
+</body>
+</html>
