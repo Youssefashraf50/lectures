@@ -138,6 +138,31 @@ main{padding-block:10px 80px}
 .menu a:hover{background:var(--soft)}
 .menu a svg{flex-shrink:0;display:block}
 
+
+/* Lecture selection modal */
+.selection-overlay{position:fixed;inset:0;z-index:200;background:rgba(8,12,28,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+.selection-dialog{width:min(100%,520px);max-height:min(82vh,720px);overflow:auto;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3);padding:20px}
+.selection-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.selection-head h2{font-size:1.08rem;font-weight:800}
+.selection-sub{font-size:.82rem;color:var(--muted);margin-bottom:14px}
+.selection-close{border:0;background:var(--soft);color:var(--text);border-radius:10px;width:34px;height:34px;font-size:20px;cursor:pointer}
+.selection-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.selection-actions button{border:0;background:var(--soft);color:var(--accent);padding:7px 11px;border-radius:9px;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer}
+.selection-count{font-size:.78rem;color:var(--muted)}
+.selection-list{display:grid;gap:8px}
+.selection-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;cursor:pointer;font-size:.86rem}
+.selection-item:has(input:checked){background:var(--soft);border-color:var(--accent)}
+.selection-item input{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0}
+.selection-footer{display:flex;gap:9px;margin-top:16px}
+.selection-footer button{flex:1;min-height:42px;border:0;border-radius:11px;font:inherit;font-weight:700;cursor:pointer}
+.selection-cancel{background:var(--soft);color:var(--text)}
+.selection-continue{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.selection-continue:disabled{opacity:.45;cursor:not-allowed}
+.selection-ai{display:grid;gap:10px;margin-top:16px}
+.selection-ai a{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--border);border-radius:13px;color:var(--text);text-decoration:none;font-weight:700}
+.selection-ai a:hover{background:var(--soft)}
+.selection-ai svg{width:32px;height:32px;flex-shrink:0}
+
 @media (max-width:600px){.grid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -303,36 +328,96 @@ function render() {
 }
 $q.addEventListener("input", render);
 
-/* AI menu */
-function closeMenu() { document.querySelectorAll(".menu").forEach(m => m.remove()); }
+/* AI menus and multi-lecture selection */
+function closeMenu() {
+  document.querySelectorAll(".menu, .selection-overlay").forEach(el => el.remove());
+}
+function aiLinks(prompt) {
+  return '<div class="selection-ai">' +
+    '<a href="https://claude.ai/new?q=' + encodeURIComponent(prompt) + '" target="_blank" rel="noopener"><strong>✳</strong>Claude</a>' +
+    '<a href="https://chatgpt.com/?q=' + encodeURIComponent(prompt) + '" target="_blank" rel="noopener"><strong>✳</strong>ChatGPT</a>' +
+    '</div>';
+}
+function openLectureSelection(subject) {
+  closeMenu();
+  const overlay = document.createElement("div");
+  overlay.className = "selection-overlay";
+  const lectures = subject.lectures;
+  const items = lectures.map((lec, i) =>
+    '<label class="selection-item"><input type="checkbox" data-lecture-index="' + i + '" checked><span>' + esc(lec.title) + '</span></label>'
+  ).join("");
+  overlay.innerHTML = '<section class="selection-dialog" role="dialog" aria-modal="true" aria-labelledby="selectionTitle">' +
+    '<div class="selection-head"><h2 id="selectionTitle">تلخيص محاضرات ' + esc(subject.name) + '</h2><button class="selection-close" type="button" aria-label="إغلاق">×</button></div>' +
+    '<p class="selection-sub">كل المحاضرات محددة تلقائيًا. تقدر تلخّصهم كلهم أو تلغي التحديد وتختار محاضرات معينة.</p>' +
+    '<div class="selection-actions"><button type="button" data-select-all>إلغاء تحديد الكل</button><span class="selection-count"></span></div>' +
+    '<div class="selection-list">' + items + '</div>' +
+    '<div class="selection-footer"><button type="button" class="selection-cancel">إلغاء</button><button type="button" class="selection-continue">متابعة (' + lectures.length + ')</button></div></section>';
+  document.body.appendChild(overlay);
+  const checks = Array.from(overlay.querySelectorAll("[data-lecture-index]"));
+  const count = overlay.querySelector(".selection-count");
+  const continueBtn = overlay.querySelector(".selection-continue");
+  const selectAllBtn = overlay.querySelector("[data-select-all]");
+  function updateSelection() {
+    const selected = checks.filter(c => c.checked).length;
+    count.textContent = "تم اختيار " + selected + " من " + lectures.length;
+    continueBtn.textContent = "متابعة (" + selected + ")";
+    continueBtn.disabled = selected === 0;
+    selectAllBtn.textContent = selected === lectures.length ? "إلغاء تحديد الكل" : "تحديد الكل";
+  }
+  checks.forEach(c => c.addEventListener("change", updateSelection));
+  selectAllBtn.addEventListener("click", () => {
+    const shouldCheck = checks.some(c => !c.checked);
+    checks.forEach(c => { c.checked = shouldCheck; });
+    updateSelection();
+  });
+  const close = () => overlay.remove();
+  overlay.querySelector(".selection-close").addEventListener("click", close);
+  overlay.querySelector(".selection-cancel").addEventListener("click", close);
+  overlay.addEventListener("click", e => { if (e.target === overlay) close(); });
+  continueBtn.addEventListener("click", () => {
+    const chosen = checks.map((c, i) => c.checked ? lectures[i] : null).filter(Boolean);
+    if (!chosen.length) return;
+    const lectureLinks = chosen.map((lec, i) => (i + 1) + ". " + lec.title + "\n" + directUrl(lec.file)).join("\n\n");
+    const prompt = "أريد تلخيصًا شاملًا ومنظمًا للمحاضرات المحددة من مادة " + subject.name + ". اقرأ المحاضرات كلها، واربط بين موضوعاتها، ونظّم الناتج في عناوين ونقاط واضحة. اشرح المفاهيم المهمة، والقواعد والتعريفات، والأمثلة والتطبيقات، ولا تُسقط أي موضوع أساسي. وفي النهاية أضف مراجعة سريعة بأهم النقاط والأسئلة المحتمل ورودها.\n\nالمحاضرات المختارة:\n" + lectureLinks;
+    close();
+    const chooser = document.createElement("div");
+    chooser.className = "selection-overlay";
+    chooser.innerHTML = '<section class="selection-dialog" role="dialog" aria-modal="true"><div class="selection-head"><h2>اختار الـ AI للتلخيص</h2><button class="selection-close" type="button" aria-label="إغلاق">×</button></div><p class="selection-sub">تم اختيار ' + chosen.length + ' محاضرة من مادة ' + esc(subject.name) + '.</p>' + aiLinks(prompt) + '</section>';
+    document.body.appendChild(chooser);
+    chooser.querySelector(".selection-close").addEventListener("click", () => chooser.remove());
+    chooser.addEventListener("click", e => { if (e.target === chooser) chooser.remove(); });
+  });
+  updateSelection();
+}
 $main.addEventListener("click", e => {
-  const btn = e.target.closest("[data-pdf], [data-subject]"); if (!btn) return;
-  e.stopPropagation(); closeMenu();
-  let prompt;
+  const btn = e.target.closest("[data-pdf], [data-subject]");
+  if (!btn) return;
+  e.stopPropagation();
   if (btn.hasAttribute("data-subject")) {
     const sub = SUBJECTS[Number(btn.dataset.subject)];
-    if (!sub || !sub.lectures.length) return;
-    const lectureLinks = sub.lectures.map((lec, i) =>
-      `${i + 1}. ${lec.title}\n${directUrl(lec.file)}`
-    ).join("\n\n");
-    prompt = `أريد تلخيصًا شاملًا ومنظمًا لجميع محاضرات مادة ${sub.name}. اقرأ المحاضرات كلها، واربط بين موضوعاتها، ونظّم الناتج في عناوين ونقاط واضحة. اشرح المفاهيم المهمة، والقواعد والتعريفات، والأمثلة والتطبيقات، ولا تُسقط أي موضوع أساسي. وفي النهاية أضف مراجعة سريعة بأهم النقاط والأسئلة المحتمل ورودها.\n\nالمحاضرات:\n${lectureLinks}`;
-  } else {
-    prompt = `لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n${btn.dataset.pdf}`;
+    if (sub && sub.lectures.length) openLectureSelection(sub);
+    return;
   }
+  closeMenu();
+  const prompt = "لخّص لي هذه المحاضرة بشكل منظم:\n• أهم النقاط والمفاهيم الرئيسية\n• الأمثلة والتطبيقات المذكورة\n\n" + btn.dataset.pdf;
   const menu = document.createElement("div");
   menu.className = "menu";
-  menu.innerHTML = `<small>اختار الـ AI</small>
-    <a href="https://claude.ai/new?q=${encodeURIComponent(prompt)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="30" height="30"><rect width="24" height="24" rx="7" fill="#D97757"/><g stroke="#fff" stroke-width="1.7" stroke-linecap="round" transform="translate(12 12) scale(.72) translate(-12 -12)"><path d="M12.00 9.40L12.00 3.40"/><path d="M13.30 9.75L15.10 6.63"/><path d="M14.25 10.70L19.10 7.90"/><path d="M14.60 12.00L18.40 12.00"/><path d="M14.25 13.30L19.62 16.40"/><path d="M13.30 14.25L15.10 17.37"/><path d="M12.00 14.60L12.00 20.40"/><path d="M10.70 14.25L9.00 17.20"/><path d="M9.75 13.30L4.55 16.30"/><path d="M9.40 12.00L5.60 12.00"/><path d="M9.75 10.70L4.90 7.90"/><path d="M10.70 9.75L8.90 6.63"/></g></svg>Claude</a>
-    <a href="https://chatgpt.com/?q=${encodeURIComponent(prompt)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="30" height="30"><rect width="24" height="24" rx="7" fill="#10a37f"/><g fill="none" stroke="#fff" stroke-width="1.3" transform="translate(12 12) scale(.8) translate(-12 -12)"><rect x="9.3" y="3.4" width="5.4" height="8.8" rx="2.7" transform="rotate(0 12 12)"/><rect x="9.3" y="3.4" width="5.4" height="8.8" rx="2.7" transform="rotate(60 12 12)"/><rect x="9.3" y="3.4" width="5.4" height="8.8" rx="2.7" transform="rotate(120 12 12)"/><rect x="9.3" y="3.4" width="5.4" height="8.8" rx="2.7" transform="rotate(180 12 12)"/><rect x="9.3" y="3.4" width="5.4" height="8.8" rx="2.7" transform="rotate(240 12 12)"/><rect x="9.3" y="3.4" width="5.4" height="8.8" rx="2.7" transform="rotate(300 12 12)"/></g></svg>ChatGPT</a>`;
+  menu.innerHTML = '<small>اختار الـ AI</small>' +
+    '<a href="https://claude.ai/new?q=' + encodeURIComponent(prompt) + '" target="_blank" rel="noopener">✳ Claude</a>' +
+    '<a href="https://chatgpt.com/?q=' + encodeURIComponent(prompt) + '" target="_blank" rel="noopener">✳ ChatGPT</a>';
   document.body.appendChild(menu);
   const r = btn.getBoundingClientRect(), h = menu.offsetHeight, w = menu.offsetWidth;
   const top = innerHeight - r.bottom > h + 8 ? r.bottom + 6 : r.top - h - 6;
   const left = Math.min(Math.max(8, r.left + r.width / 2 - w / 2), innerWidth - w - 8);
-  menu.style.top = Math.max(8, top) + "px"; menu.style.left = left + "px";
+  menu.style.top = Math.max(8, top) + "px";
+  menu.style.left = left + "px";
 });
-document.addEventListener("click", closeMenu);
+document.addEventListener("click", e => {
+  if (!e.target.closest(".menu")) closeMenu();
+});
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
 addEventListener("scroll", closeMenu, { passive: true });
+
 
 /* Theme */
 const root = document.documentElement;
