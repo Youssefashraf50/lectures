@@ -167,7 +167,7 @@ main{padding-block:10px 80px}
 <script>
 const BASE = "https://youssefashraf50.github.io/lectures/pdfs/";
 const directUrl = f => BASE + encodeURIComponent(f);
-const viewerUrl = f => "https://docs.google.com/viewer?url=" + encodeURIComponent(directUrl(f)) + "&embedded=false";
+const viewerUrl = f => "viewer.html?file=" + encodeURIComponent(directUrl(f));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 const SUBJECTS = [
@@ -290,7 +290,7 @@ function render() {
           <div class="c-title">${esc(p.name)}</div>
         </div>
         <div class="acts">
-          <a class="btn b-view" href="${viewerUrl(lec.file)}" target="_blank" rel="noopener">${ICON_EYE}عرض</a>
+          <a class="btn b-view" href="${viewerUrl(lec.file)}">${ICON_EYE}عرض</a>
           <a class="btn b-dl" href="${directUrl(lec.file)}" target="_blank" rel="noopener" download>${ICON_DL}تحميل</a>
           <button class="btn b-ai" data-pdf="${esc(directUrl(lec.file))}" aria-label="لخّص بالذكاء الاصطناعي">✨ لخّص</button>
         </div>
